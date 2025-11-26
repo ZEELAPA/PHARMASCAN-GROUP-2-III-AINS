@@ -1,0 +1,720 @@
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.main-container{
+    height: 100%;
+}
+
+.main-title {
+    margin: 1.5rem 0;
+}
+
+.main-title h3{
+    font-size: 1.75rem;
+}
+
+.main-title p, .main-title h3{
+    font-family: var(--ff-Raleway);
+    color: var(--clr-blue);
+}
+
+.panels-container{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100vh;
+}
+
+.top-panels {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+.bottom-panels{
+    flex: 2;
+    display: flex;
+}
+
+.top-left-panels{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.leave-count-panel, .calendar-panel, 
+.leave-list-panel, .pending-applications-panel{
+    background-color: var(--clr-bgwhite);
+    
+    border-radius: 10px;
+    box-shadow: 18px 18px 7px 0 rgba(0, 0, 0, 0.00), 12px 12px 7px 0 rgba(0, 0, 0, 0.01), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 1px 1px 2px 0 rgba(0, 0, 0, 0.10);
+}
+
+.leave-count-panel{
+    display: flex;
+    color: var(--clr-blue);
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.left-container{
+    padding: 0 0 0 3rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    row-gap: 0.75rem;
+}
+
+.left-container p{
+    text-align: left;
+}
+
+.sick-vacation-count{
+    flex: 1;
+    display: flex;
+    padding-right: 1.25rem;
+}
+
+.text-container{
+    text-align: center;
+    font-weight: 200;
+    padding: 0.25rem;
+}
+
+.leave-count-panel h1{
+    font-size: 3.125rem;
+    font-family: var(--ff-Metropolis);
+}
+
+.leave-count-panel h4{
+    font-size: 1.5rem;
+}
+
+.leave-count-panel p{
+    font-size: 1rem;
+    font-family: var(--ff-Metropolis);
+    font-weight: lighter;
+}
+
+.leave-count-panel{
+    flex: 1;
+}
+
+
+/* CALENDAR START */
+
+.calendar-panel {
+    height: 312px;
+    margin-top: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    box-sizing: border-box; 
+}
+
+.calendar-panel .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem 0 1rem;
+    padding: 0 1.25rem;
+}
+
+.calendar-panel .calendar-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--clr-blue);
+    margin: 0;
+}
+
+.calendar-panel .calendar-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.calendar-panel .calendar-days, .calendar-panel .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.calendar-panel .calendar-days p {
+    margin: 0;
+    font-weight: 400;
+    color: var(--clr-blue);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.calendar-panel .calendar-grid {
+    flex-grow: 1;
+}
+
+.calendar-panel .calendar-day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 200;
+    color: var(--clr-blue);
+    font-size: 1rem;
+    font-family: var(--ff-Metropolis);
+    height: 1.75rem;
+    width: 1.75rem;
+    margin: 0 auto;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.calendar-panel .calendar-day.other-month {
+    color: #a0aec0; 
+}
+
+.calendar-panel .calendar-day.today {
+    background-color: var(--clr-blue);
+    color: white;
+    font-weight: 700;
+}
+
+/* CALENDAR END */
+
+.leave-list-panel{
+    width: 100%;
+    height: 23rem;
+    padding: 1.25rem 2rem;
+}
+
+.leave-list-header{
+    color: var(--clr-blue);
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+}
+
+.add-button-container button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.25rem;
+
+    border: none;
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.leave-list-panel hr {
+    margin: 0.25rem 0 0.75rem;
+
+    border: none;
+    height: 1.5px;
+    background-color: var(--clr-blue);
+    width: 100%;
+}
+
+
+.leave-list-view-container {
+    margin-top: 0.75rem;
+    max-height: 17.5rem;
+    overflow-x: auto;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.leave-list-view-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+}
+
+.leave-list-view-container th,
+.leave-list-view-container td {
+    padding: 0.25rem 0.5rem 0.25rem;
+    border-top: 1px solid var(--clr-blue);
+    border-left: 1px solid var(--clr-blue);
+    text-align: left;
+    color: var(--clr-blue);
+    vertical-align: middle;
+}
+
+.leave-list-view-container th:first-child,
+.leave-list-view-container td:first-child {
+    border-left: none;
+}
+
+.leave-list-view-container th:last-child,
+.leave-list-view-container td:last-child {
+    text-align: center;
+}
+
+.leave-list-view-container td:nth-last-child(2) {
+    text-align: center;
+}
+
+.leave-list-view-container thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--clr-bgwhite);
+    border-bottom: 1px solid var(--clr-blue);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.leave-reason-cell {
+    max-width: 25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.leave-list-view-container tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.leave-list-view-container tbody tr:hover {
+    background-color: #f7faff;
+}
+
+/* Status tag styling */
+.status-tag-list {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 2px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: white;
+}
+
+/* Add colors for your specific leave statuses. Example: */
+.status-tag-list.pending { background-color: var(--clr-mediumyellow); }
+.status-tag-list.approved { background-color: var(--clr-lowgreen); }
+.status-tag-list.rejected { background-color: var(--clr-highred); }
+
+
+/* Expand button styling */
+.btn-expand {    
+    display: inline-block;
+    padding: 5px 1rem;
+    border-radius: 2px;
+    border: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+
+}
+
+.btn-expand:hover {
+    background-color: #0056b3;
+}
+
+.form-group input[readonly].status-input {
+    font-weight: 600;
+    cursor: default;
+    pointer-events: none; 
+}
+
+.form-group input.status-input-approved {
+    color: var(--clr-lowgreen);
+    border-bottom: 2px solid var(--clr-lowgreen);
+}
+
+.form-group input.status-input-declined {
+    color: var(--clr-highred);
+    border-bottom: 2px solid var(--clr-highred);
+}
+
+.form-group input.status-input-pending {
+    color: var(--clr-mediumyellow);
+    border-bottom: 2px solid var(--clr-mediumyellow);
+}
+
+
+/* --- Modal Styles --- */
+
+/* The Modal (background overlay) - hidden by default */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    justify-content: flex-end;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0s 0.3s;
+}
+
+.modal.active {
+    display: flex;
+
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal-content {
+    background-color: var(--clr-white);
+    width: 100%;
+    max-width: 500px;
+    height: 100vh;
+    padding: 2rem;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+    box-sizing: border-box;
+
+    transform: translateX(100%); /* Start off-screen */
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.modal.active .modal-content {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--clr-bgwhite);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--clr-blue);
+}
+
+.close-btn {
+    color: var(--clr-blue);
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--clr-blue);
+}
+
+.form-group input,
+.form-group select{
+    width: 100%;
+    padding: 0.75rem 0.25rem;
+    font-size: 1rem;
+    font-family: 'Raleway', sans-serif;
+    box-sizing: border-box;
+    
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid var(--clr-blue);
+    border-radius: 0;
+    
+    transition: border-bottom-color 0.3s ease-in-out;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+    outline: none;
+    border-bottom-color: var(--clr-blue);
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--clr-blue);
+    font-size: 1rem;
+    box-sizing: border-box;
+    font-family: 'Raleway', sans-serif;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.5rem;
+}
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.btn-submit {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    border: 1px solid var(--clr-blue);
+    border-radius: 1.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-submit:hover {
+    background-color: var(--clr-blue);
+}
+
+.btn-cancel {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--clr-white); /* Use the red color defined for rejected status */
+    color: var(--clr-blue);
+    border: 1px solid var(--clr-blue);
+    border-radius: 1.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-right: 1rem; /* Space between Cancel and Submit buttons */
+}
+.btn-cancel:hover {
+    color: var(--clr-white);
+    background-color: var(--clr-blue); 
+}
+
+/* --- Calendar Modal Styles (Slide-in from Left) --- */
+
+.modal-left {
+    display: none; 
+    position: fixed;
+    z-index: 1001;
+    left: -30vh;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);;
+}
+
+.modal-left.active {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content-left {
+    width: auto; /* Width will be determined by the .calendar-panel inside */
+    padding: 0;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.2); /* Shadow on the right edge */
+    box-sizing: border-box;
+    border-radius: 10px; /* No radius for a full-height panel */
+
+    /* Start off-screen to the left */
+    transform: translateX(-100%);
+    /* Animate the transform property */
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.modal-left.active .modal-content-left {
+    transform: translateX(0);
+}
+
+
+/* Scoped styles to prevent conflicts with dashboard calendar */
+.modal-content-left {
+    height: auto;
+    width: 40rem;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: 0;
+    box-shadow: none;
+    margin-top: 0;
+}
+
+.modal-content-left {
+    margin: 0.5rem 0 0.75rem;
+    padding: 0 0.5rem;
+}
+
+.month-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--clr-blue);
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--clr-white);
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease-in-out;
+}
+.month-nav-btn:hover {
+    background-color: #0056b3;
+}
+
+.modal-content-left #modal-calendar-grid {
+    grid-auto-rows: 5rem;
+    gap: 6px;
+}
+
+.modal-content-left .calendar-day {
+    height: 100%; /* Fill the grid cell */
+    width: 100%;
+    border: 0.5px solid var(--clr-blue);
+    font-size: 1.5rem;
+    border-radius: 0; /* Square, not circle */
+    cursor: pointer;
+}
+
+.modal-content-left .calendar-day:not(.other-month):hover {
+    background-color: #e2e8f0;
+}
+
+.modal-content-left .calendar-day.other-month {
+    color: var(--clr-unactivatedblue); 
+    border-color: var(--clr-unactivatedblue);
+    cursor: default;
+    background-color: #f8f9fa;
+}
+
+.modal-content-left .calendar-day.selected {
+    box-shadow: 0 0 0 2px var(--clr-blue) inset;
+}
+
+/* Status colors for the modal calendar */
+.modal-content-left .calendar-day.available_leave {
+    background-color: #D1ECDD;
+    border-color: var(--clr-lowgreen);
+    color: var(--clr-lowgreen);
+}
+
+.modal-content-left .calendar-day.unavailable_leave {
+    background-color: #E9D8D4;
+    border-color: var(--clr-highred);
+    color: var(--clr-highred);
+    cursor: not-allowed;
+}
+.modal-content-left .calendar-day.unavailable_leave:hover {
+     background-color: #E9D8D4;
+}
+
+.modal-content-left .calendar-day.occupied {
+    color: var(--clr-mediumyellow);
+    background-color: #E7E1CF;
+    border-color: var(--clr-mediumyellow);
+    cursor: not-allowed;
+}
+.modal-content-left .calendar-day.occupied:hover {
+    background-color: #E7E1CF;
+}
+
+.modal-content-left .calendar-day.pending_application {
+    position: relative;
+}
+.modal-content-left .calendar-day.pending_application::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 35%;
+    height: 4px;
+    background-color: var(--clr-blue);
+    border-radius: 2px;
+}
+
+/* --- CONFIRMATION MODAL STYLES --- */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-box {
+    background: var(--clr-bgwhite);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    color: var(--clr-blue);
+    font-family: var(--ff-Metropolis);
+}
+
+.modal-box h3 { 
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.modal-box p { 
+    margin-bottom: 25px;
+    font-size: 1rem;
+}
+
+.modal-buttons { 
+    display: flex; 
+    gap: 15px; 
+    justify-content: center; 
+}
+
+.modal-box .btn-confirm, 
+.modal-box .btn-cancel {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: var(--ff-Metropolis);
+    font-size: 0.9rem;
+    transition: transform 0.1s ease;
+}
+
+.modal-box .btn-confirm:active, 
+.modal-box .btn-cancel:active {
+    transform: scale(0.95);
+}
+
+.modal-box .btn-confirm { 
+    background: var(--clr-blue); 
+    color: var(--clr-white); 
+}
+
+.modal-box .btn-cancel { 
+    background: var(--clr-white); 
+    color: var(--clr-blue); 
+    border: 1px solid var(--clr-blue);
+}
+
+.modal-box .btn-cancel:hover {
+    background-color: #f0f4f8;
+}

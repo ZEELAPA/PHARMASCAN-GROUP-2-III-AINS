@@ -1,0 +1,212 @@
+.app-container {
+    display: flex;
+    height: 100vh;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.background-spikes{
+    position: absolute;
+    z-index: -1;
+}
+
+.background-spikes.bottom{
+    right: 0;
+    bottom: 0;
+}
+
+.login-container{
+    display: flex;
+    width: auto;
+    background-color: var(--clr-white);
+    width: 62.5rem;
+    height: 30rem;
+    border-radius: 2.5%;
+    z-index: 2;
+}
+
+.welcome-panel{
+    display: flex;
+    flex-grow: 1;
+    
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    
+    border-top-left-radius: 2.5%;
+    border-bottom-left-radius: 2.5%;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-container{
+    padding: 1.5rem;
+}
+
+.logo-container img{
+    background-color: var(--clr-bgwhite);
+    border-radius: 100%;
+    width: auto;
+}
+
+.welcome-container{
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.login-panel{
+    display: flex;
+    flex: 4;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    color: var(--clr-blue);
+}
+
+.login-panel a{
+    color: var(--clr-blue);
+    border-bottom: 1px solid var(--clr-blue);
+}
+
+.login-panel h4{
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.login input{
+    margin: 0.25rem 0;
+
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--clr-white);
+    border-color: var(--clr-blue);
+    border-radius: 0.4rem;
+    
+    width: 24rem;
+    height: 2rem;
+
+    padding: 0 1rem;
+}
+
+.home-button{
+    text-decoration: none;
+    color: var(--clr-blue);
+    margin: 1rem 0 1.25rem 0;
+}
+
+.buttons-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 0.25rem 0;
+}
+
+.login button{
+    margin: 0.25rem 0;
+
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    border-radius: 0.4rem;
+    
+    width: 14rem;
+    height: 2rem;
+
+    padding: 0 1rem;
+}
+
+/* Paste this at the end of login.css, replacing old button styles if necessary */
+
+.login-view {
+    width: 100%;
+}
+
+.login button {
+    margin: 0.25rem 0;
+    font-family: 'Raleway', sans-serif;
+    border-radius: 0.4rem;
+    width: 14rem;
+    height: 2.25rem; /* Slightly taller for better look */
+    padding: 0 1rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.login button.submit-button {
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    border-color: var(--clr-blue);
+}
+
+.login button.submit-button:hover {
+    opacity: 0.9;
+}
+
+.login button.secondary {
+    background-color: var(--clr-white);
+    color: var(--clr-blue);
+    border: 1px solid var(--clr-blue);
+}
+
+.login button.secondary:hover {
+    background-color: #f0f8ff; /* A very light blue on hover */
+}
+
+#nfc-login-view .nfc-instruction {
+    margin: -0.5rem 0 1.25rem 0; /* Adjust spacing */
+    color: #555;
+    font-size: 0.9rem;
+}
+
+
+/* --- NFC Input Specific Styles --- */
+.nfc-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.nfc-input-wrapper input {
+    /* Use padding to make space for the status indicator */
+    padding-right: 95px !important;
+    box-sizing: border-box; /* Ensures padding is included in width */
+}
+
+#nfcScanStatus {
+    position: absolute;
+    right: 5px; /* Adjust position */
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+    user-select: none; /* Prevents text selection */
+}
+
+.status-waiting { background-color: #888; }
+.status-listening { background-color: var(--clr-mediumyellow); }
+.status-success { background-color: var(--clr-lowgreen); }
+.status-error { background-color: var(--clr-highred); }
+
+.error-text {
+    color: var(--clr-highred);
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    width: 24rem;
+    box-sizing: border-box;
+}
+
+
+
+
+
+
+
+
+

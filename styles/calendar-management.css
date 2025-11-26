@@ -1,0 +1,493 @@
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.main-panel {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.main-title {
+    margin: 1.25rem 0;
+}
+
+.main-title h3{
+    font-size: 1.75rem;
+}
+
+.main-title p, .main-title h3{
+    font-family: var(--ff-Raleway);
+    color: var(--clr-blue);
+}
+
+.panels-container{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    height: 100%;
+}
+
+.calendar-panel, .calendar-manager-panel{
+    background-color: var(--clr-bgwhite);
+    
+    border-radius: 10px;
+    box-shadow: 18px 18px 7px 0 rgba(0, 0, 0, 0.00), 12px 12px 7px 0 rgba(0, 0, 0, 0.01), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 1px 1px 2px 0 rgba(0, 0, 0, 0.10);
+}
+
+.calendar-panel{
+    height: 40rem;
+    width: 40rem;
+}
+
+.calendar-manager-panel {
+    height: 40rem;
+    flex: 1;
+}
+
+/* CALENDAR-PANEL */
+
+.calendar-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    box-sizing: border-box; 
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--ff-Metropolis);
+    margin: 0.5rem 0 0.75rem;
+    padding: 0 0.5rem;
+}
+
+.month-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--clr-blue);
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--clr-white);
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    transition: color 0.2s ease-in-out;
+}
+
+.calendar-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--clr-blue);
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.calendar-body {
+    display: flex;
+    font-family: var(--ff-Raleway);
+    flex-direction: column;
+    height: 100%;
+}
+
+.calendar-days, .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    width: 100%;
+}
+
+.calendar-days {
+    margin-bottom: 0.5rem;
+}
+
+.calendar-days p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--clr-blue);
+    font-size: 1rem;
+}
+
+.calendar-grid {
+    flex-grow: 1;
+    grid-auto-rows: 1fr; /* Make rows fill the available height */
+    gap: 6px;
+}
+
+/* This is the new "day box" */
+.calendar-day {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--clr-bgwhite); /* A very light grey for the box */
+    border: 0.5px solid var(--clr-blue);
+    padding: 0.25rem;
+    font-weight: 400;
+    color: var(--clr-blue);
+    font-size: 1.5rem;
+    transition: background-color 0.2s;
+    font-family: var(--ff-Metropolis);
+    overflow: hidden; /* Prevents content from spilling out */
+}
+
+.calendar-day:hover {
+    background-color: #D0D0D0;
+}
+
+.calendar-day.other-month {
+    font-size: 1.25rem;
+    color: var(--clr-unactivatedblue); 
+    border-color: var(--clr-unactivatedblue);
+}
+
+/* Add a new .selected class */
+.calendar-day.selected {
+    box-shadow: 0 0 0 1px var(--clr-blue) inset;
+    background-color: #e2e8f0;
+}
+
+/* Updated status colors to match the screenshot */
+.calendar-day.available_leave {
+    background-color: #D1ECDD;
+    border-color: var(--clr-lowgreen);
+    color: var(--clr-lowgreen);
+}
+
+.calendar-day.unavailable_leave {
+    background-color: #E9D8D4;
+    border-color: var(--clr-highred);
+    color: var(--clr-highred);
+}
+
+.calendar-day.pending_application {
+    position: relative; /* This is crucial for positioning the ::after element */
+}
+
+/* 2. Create and style the rounded underline */
+.calendar-day.pending_application::after {
+    content: ''; /* Pseudo-elements must have a content property */
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    width: 35%;
+    height: 4px;
+    
+    background-color: var(--clr-blue);
+    border-radius: 2px;
+}
+
+.calendar-day.occupied {
+    color: var(--clr-mediumyellow);
+    background-color: #E7E1CF;
+    border-color: var(--clr-mediumyellow);
+}
+
+/* --- CALENDAR STYLES END --- */
+
+
+/* --- CALENDAR MANAGER PANEL STYLES START --- */
+.calendar-manager-panel {
+    padding: 1.5rem;
+    box-sizing: border-box;
+    color: var(--clr-blue);
+}
+
+.manager-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.manager-title {
+    font-size: 1.5rem;
+    margin: 0 0 0.25rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--clr-blue);
+}
+
+.manager-section {
+    margin-top: 1rem;
+}
+
+.section-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0 0.75rem 0;
+}
+
+/* Legend Section */
+.legend-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color-box {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+}
+
+.legend-color-box.available { background-color: var(--clr-lowgreen); }
+.legend-color-box.unavailable { background-color: var(--clr-highred); }
+.legend-color-box.pending { background-color: var(--clr-blue); }
+.legend-color-box.occupied { background-color: var(--clr-mediumyellow); }
+
+/* Status Setter Section */
+.status-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.status-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    background-color: var(--clr-bgwhite);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.status-btn:hover {
+    border-color: var(--clr-blue);
+}
+
+.status-btn.active {
+    border-color: var(--clr-blue);
+    box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.25);
+}
+
+.status-icon {
+    font-size: 1rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--clr-blue);
+    border: 1px solid var(--clr-blue);
+    border-radius: 50%;
+}
+
+.status-text {
+    display: flex;
+    flex-direction: column;
+    color: var(--clr-blue);
+}
+
+.status-text strong {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.status-text span {
+    font-size: 0.8rem;
+    color: var(--clr-blue);
+}
+
+/* Summary Section */
+.summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--clr-blue);
+    font-family: var(--ff-Metropolis);
+    font-size: 1rem;
+}
+
+.summary-item div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Action Buttons */
+.manager-actions {
+    margin-top: auto; /* Pushes buttons to the bottom */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.action-btn {
+    width: 50%;
+    padding: 0.8rem;
+    border-radius: 2rem;
+    font-size: 1.15rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.action-btn.save-btn {
+    background-color: var(--clr-blue);
+    color: white;
+}
+.action-btn.save-btn:hover {
+    background-color: #004a99;
+}
+.action-btn.reset-btn {
+    background-color: transparent;
+    color: var(--clr-blue);
+    border: 1px solid var(--clr-blue);
+}
+.action-btn.reset-btn:hover {
+    background-color: #e7f0f7;
+}
+
+/* --- CALENDAR MANAGER PANEL STYLES END --- */
+#calendar-tooltip {
+    display: none; /* Changed to flex in the next line */
+    position: absolute;
+    background-color: var(--clr-bgwhite);
+    border: 1px solid var(--clr-blue);
+    font-family: var(--ff-Metropolis);
+    border-radius: 5px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--clr-blue);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    pointer-events: none;
+    white-space: nowrap;
+
+    /* --- NEW FLEXBOX PROPERTIES --- */
+    display: flex;          /* This turns the tooltip into a flex container */
+    align-items: center;    /* This vertically aligns the SVG and text in the middle */
+    gap: 0.5rem;            /* This adds a nice space between the SVG and the text */
+}
+
+/* --- ADD THIS NEW RULE for the SVG --- */
+#calendar-tooltip svg {
+    transform: translateY(2px);
+    flex-shrink: 0; /* Prevents the SVG from shrinking if the text is long */
+}
+
+/* --- TOAST NOTIFICATION STYLES (From Global) --- */
+
+/* --- CONTAINER OVERRIDES FOR JS --- */
+/* This ensures multiple toasts stack properly on the left side */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none; /* Allows clicking through the container */
+}
+
+#toast-container .status-toast {
+    /* Override fixed positioning so they stack inside the flex container */
+    position: relative; 
+    top: auto;
+    left: auto;
+    pointer-events: auto; /* Re-enable clicks on the toasts themselves */
+}
+
+/* ... (Existing Toast Styles) ... */
+
+/* --- CONFIRMATION MODAL STYLES --- */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-box {
+    background: var(--clr-bgwhite);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    color: var(--clr-blue);
+    font-family: var(--ff-Metropolis);
+}
+
+.modal-box h3 { 
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.modal-box p { 
+    margin-bottom: 25px;
+    font-size: 1rem;
+}
+
+.modal-buttons { 
+    display: flex; 
+    gap: 15px; 
+    justify-content: center; 
+}
+
+.btn-confirm, .btn-cancel {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: var(--ff-Metropolis);
+    font-size: 0.9rem;
+    transition: transform 0.1s ease;
+}
+
+.btn-confirm:active, .btn-cancel:active {
+    transform: scale(0.95);
+}
+
+.btn-confirm { 
+    background: var(--clr-blue); 
+    color: var(--clr-white); 
+}
+
+.btn-cancel { 
+    background: var(--clr-white); 
+    color: var(--clr-blue); 
+    border: 1px solid var(--clr-blue);
+}
+.btn-cancel:hover {
+    background-color: #f0f4f8;
+}

@@ -1,0 +1,420 @@
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.main-title {
+    margin: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-title h3 {
+    color: var(--clr-blue);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.export-btn {
+    background-color: var(--clr-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--ff-Raleway);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.export-btn svg {
+    margin-bottom: 2px;
+}
+
+.panel-containers{
+    display: flex;
+    width: 100%;
+    height: 85vh;
+}
+
+/* --- Styles for the Filter Header --- */
+.header-container {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    padding-bottom: 0;
+    gap: 1rem;
+}
+
+.header-container label {
+    color: var(--clr-blue);
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.header-container select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: var(--ff-Raleway);
+    font-size: 0.9rem;
+    background-color: white;
+    width: 250px;
+}
+
+.controls-right {
+    margin-left: auto; /* Pushes the group to the right */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.time-toggle {
+    display: flex;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.time-toggle button {
+    border: none;
+    background-color: white;
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+    font-family: var(--ff-Raleway);
+    font-size: 0.9rem;
+    color: var(--clr-blue);
+}
+
+.time-toggle button.active {
+    background-color: var(--clr-blue);
+    color: white;
+}
+
+.date-picker-container {
+    display: flex;
+    align-items: center;
+    padding: 0.2rem 0.25rem 0.2rem 0.5rem;
+    color: var(--clr-blue);
+    font-family: var(--ff-Metropolis);
+
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    background-color: white;
+    cursor: pointer; 
+}
+
+.date-picker-container::-webkit-calendar-picker-indicator {
+    color: transparent;
+    background: none;
+    
+    /* Now, apply your custom icon */
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'><path d='M8.75 12.5L15 18.75L21.25 12.5H8.75Z' fill='%231E4671'/></svg>");background-repeat: no-repeat;
+    background-position: center;
+
+    /* Define the size of your icon's clickable area */
+    width: 1rem;
+    height: 1rem;
+    
+    /* Make it look like a button */
+    cursor: pointer;
+}
+
+.overview-container, .reports-container{
+    background-color: var(--clr-bgwhite);
+    
+    border-radius: 10px;
+    box-shadow: 18px 18px 7px 0 rgba(0, 0, 0, 0.00), 12px 12px 7px 0 rgba(0, 0, 0, 0.01), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 1px 1px 2px 0 rgba(0, 0, 0, 0.10);
+}   
+
+.overview-container {
+    width: 100%;
+    height: 100%;
+    
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* --- Styles for Attendance Table --- */
+.attendance-list {
+    padding: 1rem;
+    overflow-y: auto;
+    
+    flex-grow: 1; 
+    min-height: 0;
+}
+
+.attendance-table tbody tr {
+    height: 1rem;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 1px solid var(--clr-blue);
+    font-size: 0.9rem;
+    color: var(--clr-blue);
+}
+
+.attendance-table th:first-child,
+.attendance-table td:first-child {
+    border-left: 1px solid var(--clr-blue);
+    text-align: left;
+}
+
+.attendance-table .empty-row td {
+    border-bottom: 1px solid var(--clr-blue);
+    border-right: 1px solid var(--clr-blue);
+}
+
+.attendance-table .empty-row td:first-child {
+    border-left: 1px solid var(--clr-blue);
+}
+
+.attendance-table th:nth-child(2) {
+    width: 7.75rem;
+}
+
+.attendance-table td:nth-child(2) {
+    padding: 0.25rem;
+    text-align: center;
+}
+
+.attendance-table th,
+.attendance-table td {
+    padding: 0.85rem 1.5rem;
+    font-family: var(--ff-Metropolis);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 1px solid var(--clr-blue);
+    border-right: 1px solid var(--clr-blue);
+    white-space: nowrap;
+}
+
+.attendance-table thead th {
+    font-weight: 500;
+    color: var(--clr-blue);
+    text-align: center;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.attendance-table .no-records {
+    text-align: center;
+    padding: 2rem;
+    color: #8a9aae;
+}
+
+/* --- Styles for Status Tags --- */
+.status-tag {
+    display: inline-block;
+    padding: 0.65rem 1.15rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #fff;
+    min-width: 5.75rem;
+    text-align: center;
+}
+
+.status-working {
+    background-color: var(--clr-mediumyellow);
+}
+
+.status-finished {
+    background-color: var(--clr-lowgreen);
+}
+
+.status-absent {
+    background-color: var(--clr-highred);
+}
+
+
+/* --- Styles for Remarks Text --- */
+.remarks-overtime {
+    color: var(--clr-mediumyellow);
+    font-weight: 500;
+}
+
+.remarks-undertime {
+    color: var(--clr-highred);
+    font-weight: 500;
+}
+
+.remarks-standard {
+    color: var(--clr-lowgreen);
+    font-weight: 500;
+}
+
+
+/* --- Styles for Weekly View --- */
+
+.attendance-table.weekly-view th,
+.attendance-table.weekly-view td {
+    text-align: center;
+}
+
+/* Employee Name Column */
+.attendance-table.weekly-view th:first-child,
+.attendance-table.weekly-view td:first-child {
+    text-align: left;
+    width: 280px; /* Give more space for names */
+}
+
+/* Day columns (Sun-Sat) */
+.attendance-table.weekly-view th:not(:first-child):not(:last-child) {
+    width: 8%; /* Distribute space evenly */
+    font-weight: 600;
+}
+
+/* Total Hours Column */
+.attendance-table.weekly-view th:last-child,
+.attendance-table.weekly-view td:last-child {
+    width: 15%;
+    font-weight: 600;
+}
+
+.attendance-table.weekly-view .header-date {
+    font-size: 0.9em;
+    font-weight: 400;
+    color: #8a9aae;
+}
+
+.autocomplete-container {
+    position: relative;
+    width: 250px; /* Match the width of the old select */
+}
+
+/* The text input field */
+#search-employee-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: var(--ff-Raleway);
+    font-size: 0.9rem;
+    box-sizing: border-box; /* Important for width calculation */
+}
+
+/* The dropdown container for results */
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    /* Position the autocomplete items to be the same width as the container */
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 0 0 6px 6px;
+}
+
+/* Individual result items in the dropdown */
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #d4d4d4; 
+}
+
+/* Hover effect for result items */
+.autocomplete-items div:hover {
+    background-color: #e9e9e9; 
+}
+
+/* --- Styles for Export Modal --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 450px;
+    position: relative;
+    color: var(--clr-blue);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.modal-close-btn:hover {
+    color: var(--clr-highred);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.modal-form-group {
+    margin-bottom: 1rem;
+}
+
+.modal-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.modal-form-group select,
+.modal-form-group input[type="date"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: var(--ff-Raleway);
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.modal-confirm-btn {
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    background-color: var(--clr-blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.modal-confirm-btn:hover {
+    background-color: #265c92; /* A slightly darker blue */
+}

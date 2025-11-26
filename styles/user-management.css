@@ -1,0 +1,604 @@
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.search-panel {
+    position: relative; /* Needed for positioning the suggestions */
+}
+
+.search-wrapper {
+    position: relative; /* Crucial for positioning the icon */
+    width: 100%;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--clr-blue);
+    pointer-events: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.search-panel input {
+    height: 3.25rem;
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid var(--clr-blue); 
+    color: transparent;
+    padding-left: 45px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.search-wrapper:focus-within .search-icon {
+    color: var(--clr-blue);
+}
+
+
+.alert-message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.alert-message.success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-message.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-message.info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.main-title {
+    margin: 1rem 0;
+}
+
+.main-title h3{
+    font-size: 1.75rem;
+    font-family: var(--ff-Raleway);
+    color: var(--clr-blue);
+}
+
+.acc-mgmt {
+    display: flex;
+    margin-top: 2rem;
+    height: 82.5vh;
+}
+
+.profile-list-container{
+    flex: 1;
+}
+
+.search-panel input{
+    color: var(--clr-blue);
+    height: 3.25rem;
+    width: 100%;
+    border-radius: 1rem;
+    border-color: var(--clr-blue);
+}
+
+.profile-list{
+    margin-top: 1rem;
+    background-color: var(--clr-bgwhite);
+    height: 92.5%;
+    padding: 0.25rem;
+    
+    border-radius: 10px;
+    box-shadow: 18px 18px 7px 0 rgba(0, 0, 0, 0.00), 12px 12px 7px 0 rgba(0, 0, 0, 0.01), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 1px 1px 2px 0 rgba(0, 0, 0, 0.10);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-header{
+    display: flex;
+    padding: 1rem 2rem 0 2rem;
+    width: 100%;
+    height: 3rem;
+
+    align-items: center;
+    color: var(--clr-blue);
+}
+
+.profile-header h4{
+    flex-grow: 4;
+    font-size: 1.5rem;
+}
+
+.profile-list hr{
+    width: 95%;
+    height: 3px;
+    background-color: var(--clr-blue);
+    margin: 0.5rem auto;
+}
+
+.no-accounts{
+    margin: 0.5rem 2rem;
+}
+
+.profile-members{
+    flex-grow: 1;
+    overflow-y: auto;
+    min-height: 0;
+    margin: 0.5rem 0;
+}
+
+.profile-item{
+    display: flex;
+    align-items: center;
+    margin: 0 2rem 0.75rem;
+    background-color: var(--clr-bgblue);
+    border-radius: 10px;
+    padding: 0.75rem;
+    color: var(--clr-blue);
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+
+    box-shadow: 18px 18px 7px 0 rgba(0, 0, 0, 0.00), 12px 12px 7px 0 rgba(0, 0, 0, 0.01), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 1px 1px 2px 0 rgba(0, 0, 0, 0.10);
+}
+
+/* List View Image */
+.list-profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e0e0e0;
+}
+
+
+.profile-item h5{
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.profile-item div{
+    margin: 0 0.25rem;
+}
+
+.profile-item-icon{
+    flex-grow: 1;
+}
+
+.profile-item-details{
+    flex-grow: 4;
+}
+
+.profile-item-ranks{
+    text-align: right;
+    flex-grow: 3;
+}
+
+.profile-item:hover {
+    background-color: #e0eaf1; /* A slightly different shade of your --clr-bgblue */
+}
+
+.profile-mgmt-container{
+    margin-left: 1rem;
+    padding: 1rem;
+    
+    background-color: var(--clr-bgwhite);
+    
+    border-radius: 10px;
+    box-shadow: 18px 18px 7px 0 rgba(0, 0, 0, 0.00), 12px 12px 7px 0 rgba(0, 0, 0, 0.01), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 1px 1px 2px 0 rgba(0, 0, 0, 0.10);
+}
+
+
+.modal {
+    position: fixed; 
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Control visibility and overlay fade */
+    background-color: rgba(0,0,0,0.6);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0s 0.4s;
+}
+
+.modal.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease;
+}
+
+.modal-content {
+    background-color: var(--clr-bgwhite);
+    color: var(--clr-blue);
+    font-weight: 600;
+    
+    /* Position the panel to the right */
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    
+    /* Set a width for the panel */
+    width: 100%;
+    max-width: 480px; /* Adjust as needed */
+
+    box-sizing: border-box; /* Important for padding */
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+    
+    /* Add scroll for long content */
+    overflow-y: auto;
+    
+    /* Slide animation */
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    border: none;
+    border-radius: 0; 
+}
+
+.modal.is-open .modal-content {
+    transform: translateX(0);
+}
+
+/* Tab Navigation Styles */
+.modal-tabs {
+    display: flex;
+    border: 1px solid var(--clr-blue);
+}
+
+.tab-link {
+    background: none;
+    border: none;
+    padding: 1.25rem 1rem;
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: var(--clr-blue);
+    outline: none;
+    transition: 0.3s ease-in-out;
+    flex-grow: 1;
+}
+
+.tab-link.active {
+    background-color: var(--clr-blue); /* Active tab color */
+    color: var(--clr-white);
+}
+
+.modal-title {
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    padding: 1.25rem 0;
+    text-align: center;
+    font-size: 24px;
+}
+
+.form-error-container {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 10px 15px;
+}
+
+.form-error-container ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+/* Tab Content Styles */
+.tab-content {
+    display: none; /* Hide tabs by default */
+}
+
+.tab-content.active {
+    padding: 3rem;
+    padding-bottom: 0;
+    display: block; /* Show active tab */
+}
+
+
+/* Profile Picture Styles */
+.profile-pic-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-pic-container .img-wrapper {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+}
+
+.profile-pic-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.upload-btn {
+    background-color: #f0f0f0;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    transition: background 0.2s;
+}
+
+.upload-btn:hover {
+    background-color: #e0e0e0;
+}
+/* Form Group Styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.25rem 0;
+    background-color: var(--clr-bgwhite);
+    border: none;
+    border-bottom: 1px solid var(--clr-blue);
+    color: var(--clr-blue);
+    font-size: 1.1rem;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+}
+
+.form-group input[readonly] {
+    color: #95a5a6;
+    cursor: not-allowed;
+}
+
+/* --- NFC SCANNER STYLES --- */
+.nfc-input-wrapper {
+    position: relative;
+}
+
+#nfcCode:focus {
+    background-color: #d1ecf1; /* Highlight when listening */
+}
+
+#nfcScanStatus {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: var(--clr-white);
+    transition: all 0.3s;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.status-waiting { background-color: var(--clr-mediumyellow); }
+.status-listening { background-color: var(--clr-mediumyellow); color: white; }
+.status-success { background-color: var(--clr-lowgreen); color: white; }
+.status-error { background-color: var(--clr-highred); color: white; }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    /* Add padding to the right to prevent text from overlapping the icon */
+    padding-right: 40px; 
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    
+    /* Style the button to be transparent */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    
+    /* Style the icon itself */
+    color: var(--clr-blue); /* A light grey to match your theme */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password:focus {
+    outline: none;
+}
+
+.toggle-password svg {
+    width: 20px;
+    height: 20px;
+}
+
+.input-error-message {
+    color: #c0392b; /* A clear error red */
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-top: 5px;
+    height: 1em; /* Prevents layout shift when message appears/disappears */
+}
+
+/* Style for an input field that has an error */
+.form-group input.is-invalid {
+    border-bottom: 1px solid #c0392b;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Form Actions (Buttons) */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 3rem;
+    gap: 10px;
+    margin: 1.5rem 0;
+}
+
+.btn-save, .btn-archive {
+    padding: 10px 25px;
+    border-radius: 20px;
+    border: 1px solid var(--clr-blue);
+    color: var(--clr-blue);
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s ease-in-out;
+}
+.btn-save:hover {
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+}
+
+.btn-archive:hover {
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+}
+
+.add-new-btn {
+    margin-left: auto; /* Pushes the button to the right */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--clr-blue);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn-create {
+    padding: 10px 25px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    transition: background-color 0.3s;
+}
+
+.auth-modal-content {
+    max-width: 420px; /* A bit smaller */
+    padding: 0;
+    padding-bottom: 30px;
+}
+
+.auth-instruction {
+    text-align: center;
+    padding: 10px 20px 20px;
+    font-size: 1.1em;
+}
+
+.auth-modal-content .form-group {
+    padding: 0 30px;
+}
+
+.auth-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+    padding: 0 30px;
+}
+
+.btn-cancel, .btn-confirm {
+    padding: 10px 25px;
+    border-radius: 20px;
+    border: 1px solid var(--clr-blue);
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-cancel {
+    background-color: transparent;
+    color: var(--clr-blue);
+}
+.btn-cancel:hover {
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    transition: 0.3s ease-in-out;
+}
+
+.btn-confirm {
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+}
+.btn-confirm:hover {
+    opacity: 0.9;
+}
+.btn-confirm:disabled {
+    background-color: #bdc3c7;
+    border-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+#adminNfcCode {
+    width: 100%;
+    padding: 0.25rem 0;
+    background-color: var(--clr-bgwhite);
+    border: none;
+    border-bottom: 1px solid var(--clr-blue);
+    color: var(--clr-blue);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+#adminNfcPassword:disabled {
+    background-color: #f1f1f1;
+    cursor: not-allowed;
+    border-bottom: 1px solid #ccc;
+}
+

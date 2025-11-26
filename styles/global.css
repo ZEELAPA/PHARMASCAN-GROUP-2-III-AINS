@@ -1,0 +1,333 @@
+/* Base */
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    font-family: var(--ff-Raleway);
+    min-height: 100dvh;
+    min-height: 100vh;
+    scroll-behavior: smooth;
+}
+
+
+/* Variables */
+:root {
+    --clr-blue: #145494;
+    --clr-bgblue: #E0EBF3;
+    --clr-cardblue: #1E4671;
+    --clr-unactivatedblue: #667E97;
+    
+    --clr-white: #F5F5F5;
+    --clr-bgwhite: #EEEEEE;
+    
+    --clr-lowgreen: #3B6B50;
+    --clr-mediumyellow: #AA7E01;
+    --clr-highred: #A72A0C;
+  
+    --ff-Raleway: 'Raleway', sans-serif;
+    --ff-ProximaNova: "Proxima Nova", sans-serif;
+    --ff-Montserrat: "Montserrat", sans-serif;
+    --ff-Marcellus: "Marcellus", serif;
+    --ff-Metropolis: "Metropolis", sans-serif; 
+}
+
+/* Section */
+section {
+    width: 100%;
+    height: 100vh;
+    height: 100lvh;
+  
+    display: flex;
+    overflow: hidden;
+}
+
+svg, img, iframe {
+    user-select: none;
+}
+
+ul {
+    list-style: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+a {
+    text-decoration: none;
+}
+
+.sidebar{
+    background-color: var(--clr-white);
+    width: 15%;
+    height: 100vh;
+    
+    cursor: pointer;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+
+    box-shadow: 18px 18px 7px 0 rgba(0, 0, 0, 0.00), 12px 12px 7px 0 rgba(0, 0, 0, 0.01), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 1px 1px 2px 0 rgba(0, 0, 0, 0.10);
+}
+
+.sidebar .nav-panel a {
+    display: flex;
+    align-items: center;
+    font-family: var(--ff-Raleway);
+    font-weight: 400;
+    padding: 0.5rem 0;
+    
+    /* Set the DEFAULT (inactive) color to gray */
+    color: var(--clr-unactivatedblue); 
+    transition: color 0.2s ease, font-weight 0.2s ease;
+}
+
+.sidebar .nav-panel a.active {
+    color: var(--clr-blue); /* The main blue color */
+    font-weight: 600;       /* Make it bolder */
+}
+
+/* Style for the SVG icons */
+.sidebar .nav-panel svg path,
+.sidebar .nav-panel svg g {
+    stroke: var(--clr-unactivatedblue);
+    transition: stroke 0.2s ease, fill 0.2s ease;
+}
+
+/* Style for the ACTIVE link's SVG icon */
+.sidebar .nav-panel a.active svg path,
+.sidebar .nav-panel a.active svg g {
+    stroke: var(--clr-blue);
+}
+
+.sidebar.collapsed + .main-container {
+    margin-left: 6%;
+}
+
+.sidebar.collapsed {
+    width: 6%;
+}
+
+.sidebar.collapsed .nav-panel{
+  opacity: 0;
+  display: none;
+}
+
+.sidebar .logo-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.sidebar .logo-background{
+    width: 100%;
+    height: 9.625rem;
+}
+
+.sidebar .logo{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 75%;
+    transition: 0.3s;
+}
+
+.sidebar .nav-panel{
+    display: flex;
+    justify-content: center;
+    height: 75%;
+}
+
+.sidebar .nav-tabs{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar .nav-panel ul{
+    margin-top: 1.5rem;
+}
+
+.sidebar .nav-panel li{
+    line-height: 2;
+}
+
+.sidebar .nav-panel svg{
+    justify-self: left;
+    fill: var(--clr-bgwhite);
+    min-width: 25px;
+    margin-right: 0.25rem;
+}
+
+.sidebar .logout-container{
+    display: flex;
+    align-items: center;
+    
+}
+
+.main-container {
+    position: relative; 
+    overflow: hidden;
+
+    flex-grow: 1;
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+
+    margin-left: 15%; 
+    transition: margin-left 0.3s ease;
+}
+
+.background-glow{
+    position: fixed;
+    z-index: -1;
+    
+    width: 250px;
+    height: 200px;
+    
+    background: var(--clr-blue); 
+    
+    filter: blur(250px); 
+    
+    pointer-events: none;
+}
+
+.background-glow.top{
+    top: -80px;  
+    right: 0px; 
+}
+
+.background-glow.bottom{
+    bottom: -80px;  
+    left: 10px; 
+}
+
+/* --- Toast Notification Styles --- */
+.status-toast {
+   /* Add these three lines to enable flexbox alignment */
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* This creates space between the icon and text */
+
+    position: fixed; /* Stays in place even when scrolling */
+    top: 20px;
+    left: 0;
+    padding: 1rem 1.5rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+    border: 1px solid transparent;
+    border-left: none;
+    font-weight: 600;
+    z-index: 3000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateX(-120%);
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+/* This class will be added by JavaScript to trigger the slide-in animation */
+.status-toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-icon {
+    flex-shrink: 0; /* Prevents the icon from shrinking if the text is long */
+}
+
+/* --- Message Types --- */
+
+/* For expired/error messages */
+.status-toast.status-expired,
+.status-toast.status-error {
+    color: var(--clr-highred); /* Dark yellow text */
+    background-color: #FDC9CB; /* Light yellow background */
+    border-color: var(--clr-highred); /* Medium yellow border */
+}
+
+/* For success messages */
+.status-toast.status-success {
+    color: var(--clr-lowgreen); /* Dark yellow text */
+    background-color: #BAF7CE; /* Light yellow background */
+    border-color: var(--clr-lowgreen); /* Medium yellow border */
+}
+
+.status-toast.status-info {
+    color: var(--clr-blue); /* Dark yellow text */
+    background-color: var(--clr-bgblue); /* Light yellow background */
+    border-color: var(--clr-blue); /* Medium yellow border */
+}
+
+/* NFC Modal Styles */
+.nfc-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
+}
+
+.nfc-modal.is-open {
+    display: flex;
+}
+
+.nfc-modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    border: 1px solid var(--clr-blue);
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.nfc-modal h3 {
+    font-size: 1.5rem;
+    color: var(--clr-blue);
+    margin-bottom: 15px;
+}
+
+.nfc-input-wrapper {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.nfc-modal input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--clr-blue);
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.nfc-status {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.status-waiting { background-color: var(--clr-mediumyellow); color: #fff; }
+.status-listening { background-color: var(--clr-mediumyellow); color: #fff; }
+.status-success { background-color: var(--clr-lowgreen); color: #fff; }
+.status-error { background-color: var(--clr-highred); color: #fff; }
+
+.nfc-modal-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}

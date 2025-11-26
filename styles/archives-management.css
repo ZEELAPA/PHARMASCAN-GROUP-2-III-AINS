@@ -1,0 +1,355 @@
+/* ==================================== */
+/*          Layout and Structure        */
+/* ==================================== */
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.main-container {
+    height: 100%;
+}
+
+.main-panel {
+    /* Assuming appropriate padding/margin handled by global or main layout CSS */
+}
+
+.panels-container {
+    display: flex;
+    flex-direction: column;
+    /* Adjusted height to prevent overflow when scrollbar is present,
+       but often better managed by padding/margin setup in the parent container */
+    height: 100%; 
+}
+
+.main-title {
+    margin: 1.25em 0;
+}
+
+.main-title h3 {
+    font-size: 1.75rem;
+}
+
+.main-title p, 
+.main-title h3 {
+    font-family: var(--ff-Raleway);
+    color: var(--clr-blue);
+}
+
+/* ==================================== */
+/*           Archive List Panel         */
+/* ==================================== */
+
+.archive-list-panel {
+    background-color: var(--clr-bgwhite);
+    border-radius: 10px;
+    box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.1), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 12px 12px 7px 0 rgba(0, 0, 0, 0.01);
+    
+    width: 100%;
+    /* Flex-grow handles remaining vertical space, but 82% is kept if fixed height is desired */
+    height: 82%; 
+    padding: 1.25rem 2rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.archive-list-header {
+    color: var(--clr-blue);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Archive Selector Dropdown Styling */
+.archive-selection {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.archive-selection label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-right: 10px;
+    color: var(--clr-blue);
+}
+
+#archiveTableSelect {
+    padding: 0.25rem 0.5rem;
+    width: 18rem;
+    font-size: 1.5rem;
+    border: 1px solid var(--clr-blue);
+    font-weight: 700;
+    background-color: var(--clr-bgwhite);
+    color: var(--clr-blue);
+    cursor: pointer;
+    font-family: var(--ff-Raleway);
+}
+
+/* Export Button Styling (Reusing existing button styles but named differently) */
+.export-button-container button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.25rem;
+    gap: 0.5rem;
+
+    border: none;
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.export-button-container button:hover {
+    background-color: #0056b3; 
+}
+
+
+.archive-list-panel hr {
+    margin: 0.25rem 0 0.75rem;
+    border: none;
+    height: 1.5px;
+    background-color: var(--clr-blue);
+    width: 100%;
+}
+
+.archive-list-body {
+    flex-grow: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.archive-list-body h4 {
+    color: var(--clr-blue);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.archive-list-view-container {
+    flex-grow: 1;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.archive-list-view-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+    min-width: 600px; /* Ensure table doesn't collapse too much */
+}
+
+.archive-list-view-container th,
+.archive-list-view-container td {
+    padding: 0.5rem 0.5rem 0.5rem;
+    border-top: 1px solid var(--clr-blue);
+    border-left: 1px solid var(--clr-blue);
+    text-align: left;
+    color: var(--clr-blue);
+    vertical-align: middle;
+}
+
+
+.archive-list-view-container th:first-child,
+.archive-list-view-container td:first-child {
+    border-left: none;
+}
+
+.archive-list-view-container th:last-child,
+.archive-list-view-container td:last-child {
+    text-align: center;
+    width: 80px; /* Width for the button column */
+}
+
+.archive-list-view-container thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--clr-bgwhite);
+    border-bottom: 2px solid var(--clr-blue);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.archive-list-view-container tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.archive-list-view-container tbody tr:hover {
+    background-color: #f7faff;
+}
+
+
+/* Status tag styling (Used for Action Type) */
+.status-tag-list {
+    display: inline-block;
+    padding: 0.25rem 1rem;
+    border-radius: 2px;
+    font-weight: 500;
+    font-size: 1rem;
+    color: white;
+}
+
+/* Status Colors (Examples) */
+.status-tag-list.pending { background-color: var(--clr-mediumyellow); }
+.status-tag-list.approved { background-color: var(--clr-lowgreen); }
+.status-tag-list.completed { background-color: var(--clr-lowgreen); }
+.status-tag-list.rejected { background-color: var(--clr-highred); }
+.status-tag-list.cancelled { background-color: var(--clr-highred); }
+.status-tag-list.creation { background-color: var(--clr-blue); } 
+.status-tag-list.update { background-color: #9c27b0; } 
+
+
+/* Expand button styling */
+.btn-expand {    
+    display: inline-block;
+    padding: 5px 1rem;
+    border-radius: 2px;
+    border: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    transition: background-color 0.2s;
+}
+
+.btn-expand:hover {
+    background-color: #0056b3;
+}
+
+
+/* ==================================== */
+/*           Modal Styles (Archives)    */
+/* ==================================== */
+
+/* Note: Targeting #archiveModal specifically */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    justify-content: flex-end;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0s 0.3s;
+}
+
+.modal.active {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal-content {
+    background-color: var(--clr-white);
+    width: 100%;
+    max-width: 500px;
+    height: 100vh;
+    padding: 2rem;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+    box-sizing: border-box;
+
+    transform: translateX(100%); 
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    overflow-y: auto; /* Allow content to scroll */
+}
+
+.modal.active .modal-content {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--clr-blue);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.75rem;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--clr-blue);
+}
+
+.close-btn {
+    color: var(--clr-blue);
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Form/Detail Grouping */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    color: var(--clr-blue);
+    font-size: 0.95rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.5rem;
+}
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Styling for Read-only Inputs (Archive Details) */
+#archiveModal .form-group input,
+#archiveModal .form-group select,
+#archiveModal .form-group textarea {
+    width: 100%;
+    padding: 0.75rem 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    box-sizing: border-box;
+
+    background-color: var(--clr-white); /* Light background for read-only */
+    border: none;
+    color: #444; 
+    border-bottom: 1px solid var(--clr-blue); /* Subtle border */
+    border-radius: 0;
+    cursor: default;
+    pointer-events: none; /* Make interaction impossible */
+    font-family: var(--ff-Raleway);
+}
+
+#dynamicDetailsContainer h3 {
+    color: var(--clr-blue);
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+/* Hide unused elements from the original form structure in this view */
+#leaveApplicationForm,
+#leaveActionForm,
+.read-only-display, /* If using the new read-only inputs */
+#applicationModal {
+    /* Ensure these are hidden if they were accidentally left in the HTML */
+    display: none; 
+}

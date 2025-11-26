@@ -1,0 +1,723 @@
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.main-container{
+    height: 100%;
+}
+
+.main-title {
+    margin: 1rem 0;
+}
+
+.main-title h3{
+    font-size: 2.5rem;
+}
+
+.main-title p, .main-title h3{
+    font-family: var(--ff-Raleway);
+    color: var(--clr-blue);
+}
+
+.panels-container{
+    display: flex;
+    flex-direction: column;
+    height: 40rem;
+}
+
+.top-panels{
+    display: flex;
+    flex: 1;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.bottom-panels{
+    display: flex;
+    flex: 1;
+    gap: 1rem;
+    height: 15rem;
+}
+
+.admin-notes-panel, .working-employees-panel, .pending-tasks-panel, 
+.calendar-panel, .employee-distribution-panel, .pending-applications-panel{
+    background-color: var(--clr-bgwhite);
+    
+    border-radius: 10px;
+    box-shadow: 18px 18px 7px 0 rgba(0, 0, 0, 0.00), 12px 12px 7px 0 rgba(0, 0, 0, 0.01), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 1px 1px 2px 0 rgba(0, 0, 0, 0.10);
+}
+
+/* --- Admin Notes Panel --- */
+.admin-notes-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    padding: 0.5rem 1.75rem;
+}
+
+.admin-notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--clr-blue);
+}
+
+.admin-notes-header h4 {
+    font-size: 1.25rem;
+    margin: 0.75rem 0 0.5rem;
+}
+
+#add-note-btn {
+    background: none;
+    border: none;
+    color: var(--clr-blue);
+    font-size: 2rem;
+    font-weight: 300;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    line-height: 1;
+}
+
+.admin-notes-panel hr {
+    width: 100%;
+    height: 1px;
+    background-color: var(--clr-blue);
+    opacity: 0.5;
+    border: none;
+    margin: 0 auto 0.5rem;
+}
+
+.admin-notes-list {
+    list-style: none;
+    padding: 0 0.25rem;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.note-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    color: var(--clr-blue);
+}
+
+.note-item.completed .note-text {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.note-checkbox {
+    appearance: none;
+    margin-right: 0.75rem;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--clr-bgwhite);
+    border: 1px solid var(--clr-blue);
+}
+
+.note-checkbox:checked {
+    background-color: var(--clr-blue);
+    border-color: var(--clr-blue);
+    
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='white' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 60%; /* Adjust size of checkmark */
+}
+
+.note-text {
+    flex-grow: 1;
+}
+
+.delete-note-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--clr-blue);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.delete-note-btn:hover {
+    opacity: 1;
+}
+
+.no-notes {
+    color: var(--clr-blue);
+    opacity: 0.7;
+    padding: 0.5rem 0;
+}
+
+.working-pending-panels {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    gap: 1rem;
+    max-width: 400px;
+}
+
+.info-panel {
+    flex: 1;
+    background-color: var(--clr-bgwhite);
+    color: var(--clr-blue);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+
+    padding: 1.5rem;
+    border-radius: 12px;
+    position: relative; /* Crucial for positioning the image inside */
+    overflow: hidden;   /* Crucial for hiding the image when it's outside */
+    transition: background-color 0.3s ease-out, color 0.3s ease-out;
+    z-index: 1;
+}
+
+.panel-content {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    transition: transform 0.3s ease-out;
+}
+
+.number-container {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-family: var(--ff-Metropolis);
+    font-size: 2rem; /* Increased size slightly */
+    transition: 0.3s ease-out;
+    font-weight: 700;
+}
+
+.number-container h4 {
+    margin: 0;
+}
+
+.info-panel p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--clr-blue);
+    transition: 0.3s ease-out;
+}
+
+.pending-tasks-panel {
+    overflow: visible;
+}
+
+/* Default state for SVG icons */
+.info-panel svg circle {
+    fill: var(--clr-blue);
+    transition: fill 0.3s ease-out;
+}
+
+.info-panel svg path {
+    fill: var(--clr-white);
+    transition: fill 0.3s ease-out;
+}
+
+/* --- Panel Image Styling --- */
+
+.panel-image {
+    position: absolute;
+    bottom: 0;
+    opacity: 0; /* Hidden by default */
+    transform: translateY(100%); /* Start position: completely below the panel */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    pointer-events: none; /* Prevents image from blocking mouse events */
+}
+
+/* Position each image specifically */
+.working-employees-panel .panel-image {
+    right: 0px; /* Positioned on the right */
+    height: 75%;
+}
+
+.pending-tasks-panel .panel-image {
+    left: 0; /* Positioned on the left */
+    height: 110%;
+}
+
+
+/* --- HOVER EFFECTS --- */
+
+.info-panel:hover {
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    z-index: 10;
+}
+
+/* Move the image into view on hover */
+.info-panel:hover .panel-image {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.working-employees-panel:hover .panel-image {
+    height: 75%;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.pending-tasks-panel:hover .panel-image {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Move the text content to make space for the image */
+.working-employees-panel:hover .panel-content {
+    transform: translate(0px, -30px);
+}
+
+.working-employees-panel:hover .panel-content p{
+    display: flex;
+    flex-direction: column;
+    transform: translate(-120px, 45px);
+}
+
+.pending-tasks-panel:hover .panel-content .number-container{
+    transform: translate(120px, -20px);
+}
+
+.pending-tasks-panel:hover .panel-content p{
+    transform: translateY(15px);
+}
+
+/* Invert SVG colors on hover */
+.info-panel:hover svg circle {
+    fill: var(--clr-white);
+}
+
+.info-panel:hover svg path {
+    fill: var(--clr-blue);
+}
+
+.info-panel:hover p {
+    color: var(--clr-white);
+}
+
+/* CALENDAR START */
+
+.calendar-panel {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    box-sizing: border-box; 
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--ff-Metropolis);
+    margin: 0.5rem 0 0.75rem;
+    padding: 0 0.5rem;
+}
+
+.calendar-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--clr-blue);
+    margin: 0;
+}
+
+.calendar-body {
+    display: flex;
+    font-family: var(--ff-Metropolis);
+    flex-direction: column;
+    height: 100%;
+}
+
+.calendar-days, .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    width: 100%;
+}
+
+.calendar-days {
+    margin-bottom: 0.5rem;
+}
+
+.calendar-days p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--clr-blue);
+    font-size: 0.85rem;
+}
+
+.calendar-grid {
+    flex-grow: 1;
+}
+
+.calendar-day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 400;
+    color: var(--clr-blue);
+    font-size: 0.9rem;
+    height: 1.75rem;
+    width: 1.75rem;
+    margin: 0 auto;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.calendar-day.other-month {
+    color: #a0aec0; 
+}
+
+.calendar-day.today {
+    background-color: var(--clr-blue);
+    color: white;
+    font-weight: 700;
+}
+
+/* CALENDAR END */
+
+.employee-distribution-panel{
+    flex: 2;
+}
+
+.pending-applications-panel{
+    flex: 3;
+    padding: 0.5rem 0;
+}
+
+.pending-applications-panel h4{
+    margin-bottom: 0.5rem;
+}
+
+.leave-count, .pending-item-details p{
+    font-family: var(--ff-Metropolis);
+}
+
+.pending-header{
+    font-size: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    color: var(--clr-blue);
+}
+
+a.pending-item {
+    text-decoration: none; /* Removes the underline from the link */
+    color: var(--clr-blue);        /* Makes the text color the same as its parent */
+    display: flex;         /* Re-applies flex layout if it was there before */
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease-in-out; /* Adds a smooth transition for the hover effect */
+}
+
+/* Add a visual cue on hover so users know it's clickable */
+a.pending-item:hover {
+    cursor: pointer;
+    background-color: var(--clr-bgblue); /* A slightly different background color on hover */
+    transform: translateY(-2px); /* Lifts the card up slightly */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+}
+
+
+/* === EMPLOYEE DISTRIBUTION PANEL STYLES === */
+
+.employee-distribution-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+}
+
+.employee-distribution-panel h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+    color: var(--clr-blue);
+    font-weight: 700;
+}
+
+.chart-panel-body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px; 
+    height: 100%;
+}
+
+.chart-panel-body .chart-container {
+    width: 60%; /* The chart will take 60% of the parent's width */
+    max-width: 200px; /* Optional: Prevents it from getting too big on large screens */
+    
+    position: relative; 
+    height: auto; /* Let height be determined by aspect ratio */
+}
+
+.chart-panel-body .chart-legend-container {
+    padding-left: 15px;
+}
+
+/* Styling for the generated legend list */
+.legend-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.legend-list li {
+    display: flex;
+    align-items: end;
+    margin-bottom: 12px; /* Space between legend items */
+}
+
+.legend-color-box {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 3px;
+    margin-right: 10px;
+    flex-shrink: 0;
+    margin-bottom: 0.3rem;
+}
+
+.legend-label {
+    font-size: 1.25rem;
+    margin-left: 1rem;
+    padding-bottom: 0.25rem;
+    color: var(--clr-blue);
+    font-weight: 300;
+}
+
+.legend-value {
+    font-size: 2.5rem;
+    color: var(--clr-blue);
+    font-family: var(--ff-Metropolis);
+    font-weight: 700;
+    margin-left: 10px;
+}
+
+/* --- Pending Applications Panel --- */
+
+.pending-applications-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.pending-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem;
+    color: var(--clr-blue);
+}
+
+.pending-header h4 {
+    font-size: 1.25rem;
+    margin: 0.5rem 0;
+}
+
+.pending-applications-panel hr {
+    width: 95%;
+    height: 2px;
+    background-color: var(--clr-blue);
+    border: none;
+    margin: 0.25rem auto 0.5rem;
+}
+
+.pendings-list-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding: 0 0.5rem 0 1.5rem; /* Add padding for scrollbar space */
+}
+
+.no-applications {
+    color: var(--clr-blue);
+    opacity: 0.7;
+}
+
+.pending-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--clr-bgblue); /* Uses your variable */
+    color: var(--clr-blue);
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.625rem; /* 10px */
+    margin-bottom: 0.75rem;
+    margin-right: 1rem; /* Space for scrollbar */
+    box-shadow: 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 1px 1px 2px 0 rgba(0, 0, 0, 0.10);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.pending-item:hover {
+    background-color: #e0eaf1; /* A slightly lighter version of bgblue */
+}
+
+.pending-item h5 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+}
+
+.pending-item p {
+    font-size: 0.875rem;
+    margin: 0;
+    opacity: 0.8;
+}
+
+.pending-item-info {
+    text-align: right;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-container {
+    width: 650px;
+    height: 406px;
+    background-color: var(--clr-bgwhite);
+    color: var(--clr-blue);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    transform: scale(1);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.hidden .modal-container {
+    transform: scale(0.95);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--clr-blue);
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--clr-blue);
+    cursor: pointer;
+}
+
+.note-form {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allows the form to fill the modal space */
+    padding-top: 1rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.form-group.form-group-full {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+    border: 1px solid var(--clr-blue);
+    background-color: var(--clr-bgwhite);
+    padding: 0.75rem;
+    font-size: 1rem;
+    color: #333;
+}
+
+.form-group input[readonly] {
+    background-color: var(--clr-bgwhite); /* A slightly different background for readonly */
+    cursor: not-allowed;
+}
+
+.form-group textarea {
+    resize: none;
+    flex-grow: 1; /* Makes textarea fill available vertical space */
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem; /* Pushes buttons to the bottom */
+}
+
+.btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid var(--clr-blue);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+}
+
+.btn-primary:hover {
+    background-color: #104375; /* A slightly darker blue */
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--clr-blue);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(20, 84, 148, 0.1);
+}
+
+
+
+
+
+
+
+

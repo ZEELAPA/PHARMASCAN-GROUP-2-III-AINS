@@ -1,0 +1,167 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.attendance-container {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+.time-display {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 20px;
+}
+.status-message {
+    color: #007bff;
+    font-weight: bold;
+    margin-bottom: 20px;
+    min-height: 20px;
+}
+.session-message {
+    padding: 10px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #666;
+}
+input[type="datetime-local"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+.button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.time-in-btn { background-color: var(--clr-blue); transition: 0.3s; }
+.time-in-btn:hover { box-shadow: 5px 5px 6px black; transition: 0.3s; }
+.time-out-btn { background-color: #dc3545; }
+.time-out-btn:hover { box-shadow: 5px 5px 6px black; transition: 0.3s; }
+
+.session-message {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    border: 1px solid transparent;
+}
+
+.session-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.session-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.session-message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1.2em; /* Make it easier to see the scanned ID */
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Make the button look more generic */
+.button {
+    background-color: var(--clr-blue); /* Or any general color */
+}
+.button:hover {
+     box-shadow: 5px 5px 6px black; transition: 0.3s;
+}
+
+/* Add or modify these styles in attendance.css */
+
+.action-selector {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.action-selector .button {
+    flex-grow: 1; /* Make buttons fill the space */
+    border: 3px solid transparent; /* Add border for active state */
+}
+
+/* Style for the active/selected button */
+.action-selector .button.active {
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+.scan-area {
+    padding: 20px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+#scanPrompt {
+    margin: 0;
+    font-size: 1.4em;
+    color: #555;
+}
+
+.nfc-icon-container {
+    margin-top: 15px;
+    color: #ccc;
+    transition: color 0.3s;
+}
+
+/* Make the icon glow when a mode is active */
+.scan-area.ready .nfc-icon-container {
+    color: #007bff;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 25px 0;
+}
