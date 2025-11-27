@@ -1,6 +1,6 @@
 <?php
-require 'sqlconnect.php';
-include 'mailer.php'; // Include the mailer function
+require '../sqlconnect.php';
+include '../mailer.php'; // Include the mailer function
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $empStmt->close();
                 // --- EMAIL NOTIFICATION LOGIC END ---
 
-                header("Location: task-management.php?status=success");
+                header("Location: ../task-management.php?status=success");
                 exit();
             } else {
                 echo "Error executing statement: " . $stmt->error;
@@ -102,14 +102,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
         $stmt->close();
         
-        header("Location: task-management.php?status=updated");
+        header("Location: ../task-management.php?status=updated");
         exit();
     }
 
     $conn->close();
 
 } else {
-    header("Location: task-management.php");
+    header("Location: ../task-management.php");
     exit();
 }
 ?>

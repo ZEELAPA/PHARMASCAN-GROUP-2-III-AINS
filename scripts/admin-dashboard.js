@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Note title or body cannot be empty.');
                 return;
             }
-            const response = await fetch('admin-notes.php', {
+            const response = await fetch('handlers/admin-notes.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'add', text: combinedText })
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else if (mode === 'edit') {
             const noteId = noteModal.dataset.editingId;
-            const response = await fetch('admin-notes.php', {
+            const response = await fetch('handlers/admin-notes.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'update', id: noteId, text: combinedText })
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const deleteNote = async (noteId) => {
-        const response = await fetch('admin-notes.php', {
+        const response = await fetch('handlers/admin-notes.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'delete', id: noteId })
@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         else if (e.target.classList.contains('note-checkbox')) {
             const isCompleted = e.target.checked;
-            const response = await fetch('admin-notes.php', {
+            const response = await fetch('handlers/admin-notes.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'toggle', id: noteId, completed: isCompleted })

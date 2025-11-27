@@ -1,7 +1,7 @@
 <?php
     // 1. Include the necessary files
-    require_once 'auth.php';
-    require_once 'sqlconnect.php';
+    require_once '../auth.php';
+    require_once '../sqlconnect.php';
 
     // ... authentication checks are already good ...
 
@@ -11,7 +11,7 @@
         
         if ($requestingAccountID !== $_SESSION['AccountID']) {
             add_toast('Unauthorized Action.', 'error');
-            header('Location: leave-application.php');
+            header('Location: ../leave-application.php');
             exit();
         }
         
@@ -57,12 +57,12 @@
         
         $conn->close();
         // Redirect cleanly
-        header('Location: leave-application.php');
+        header('Location: ../leave-application.php');
         exit();
 
     } else {
         add_toast('Missing required parameters.', 'error');
-        header('Location: leave-application.php');
+        header('Location: ../leave-application.php');
         exit();
     }
 ?>

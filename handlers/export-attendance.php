@@ -1,13 +1,13 @@
 <?php
 // (0) SETUP - Include Composer's autoloader to use PhpSpreadsheet
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 // (1) BOILERPLATE - Initialize session and database connection
-include('auth.php');
-include('sqlconnect.php');
+include('../auth.php');
+include('../sqlconnect.php');
 
 // (2) GET INPUT - Get user from session and date from URL parameters
 $accountID = $_SESSION['AccountID'];

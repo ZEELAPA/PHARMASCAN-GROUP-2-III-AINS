@@ -202,7 +202,7 @@ if ($stmt = $conn->prepare($sql)) {
                 <h2 id="modalTitle">New Application</h2>
                 <span class="close-btn">&times;</span>
             </div>
-            <form id="leaveApplicationForm" action="leave-handler.php" method="POST">
+            <form id="leaveApplicationForm" action="handlers/leave-handler.php" method="POST">
                 
                 <!-- This hidden input would store the ID of the logged-in employee -->
                 <input type="hidden" id="accountID" name="accountID" value="<?php echo $currentUserID; ?>">

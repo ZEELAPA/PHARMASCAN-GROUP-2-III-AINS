@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('sqlconnect.php'); // Make sure this path is correct
+include('../sqlconnect.php'); // Make sure this path is correct
 
 // Set the content type to JSON
 header('Content-Type: application/json');

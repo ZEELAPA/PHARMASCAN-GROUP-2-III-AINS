@@ -152,7 +152,7 @@
             </div>
             
             <!-- A single, flexible form for both Creating and Viewing -->
-            <form id="leaveApplicationForm" action="leave-management-handler.php" method="POST">
+            <form id="leaveApplicationForm" action="handlers/leave-management-handler.php" method="POST">
                 
                 <div class="form-group">
                     <label for="accountID">Employee Name</label>
@@ -216,7 +216,7 @@
             </form>
             
             <!-- Action form for APPROVE/DECLINE -->
-            <form id="leaveActionForm" action="leave-management-handler.php" method="POST">
+            <form id="leaveActionForm" action="handlers/leave-management-handler.php" method="POST">
                 <input type="hidden" id="actionLeaveID" name="leaveID">
                 <input type="hidden" id="actionAccountID" name="accountID">
                 <div class="form-actions modal-actions">
@@ -230,7 +230,7 @@
                 <button type="button" id="archiveModalButton" class="btn-archive-modal" style="display:none;">Archive Record</button>
             </div>
 
-            <form id="modalArchiveForm" action="leave-management-handler.php" method="POST">
+            <form id="modalArchiveForm" action="handlers/leave-management-handler.php" method="POST">
                 <input type="hidden" name="archive_leave_id" id="modalArchiveLeaveID">
             </form>
         </div>

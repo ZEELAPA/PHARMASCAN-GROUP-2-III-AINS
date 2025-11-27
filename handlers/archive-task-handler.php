@@ -1,9 +1,9 @@
 <?php
 // archive-task-handler.php
 
-include('auth.php');
+include('../auth.php');
 require_admin(); // Ensure only authorized users can archive
-include('sqlconnect.php');
+include('../sqlconnect.php');
 
 // Initialize response array
 $response = ['success' => false, 'message' => ''];

@@ -1,13 +1,12 @@
 <?php
 // 1. Include the files that start the session and define add_toast()
-// NOTE: Your session_start() is in auth.php, so we don't need it here again.
-require_once 'auth.php';
-require_once 'sqlconnect.php';
+require_once '../auth.php';
+require_once '../sqlconnect.php';
 
-// 2. Check if the user is logged in is already handled by auth.php/require_user
+// 2. Check if the user is logged in is already handled by ../auth.php/require_user
 // but an explicit check here is good practice.
 if (!isset($_SESSION['AccountID'])) {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 
@@ -24,13 +23,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($accountID != $_SESSION['AccountID']) {
         add_toast('Authentication error occurred.', 'error');
-        header('Location: leave-application.php');
+        header('Location: ../leave-application.php');
         exit();
     }
     
     if (empty($accountID) || empty($leaveType) || empty($startDate) || empty($endDate)) {
         add_toast('Please fill out all required fields.', 'error');
-        header('Location: leave-application.php');
+        header('Location: ../leave-application.php');
         exit();
     }
     
@@ -49,12 +48,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($leaveType === 'Sick Leave' && $leaveDuration > $balances['SickLeaveBalance']) {
             add_toast('Insufficient sick leave balance.', 'error');
-            header('Location: leave-application.php');
+            header('Location: ../leave-application.php');
             exit();
         }
         if ($leaveType === 'Vacation Leave' && $leaveDuration > $balances['VacationLeaveBalance']) {
             add_toast('Insufficient vacation leave balance.', 'error');
-            header('Location: leave-application.php');
+            header('Location: ../leave-application.php');
             exit();
         }
     }
@@ -77,11 +76,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $conn->close();
     // Redirect cleanly after adding the toast
-    header('Location: leave-application.php');
+    header('Location: ../leave-application.php');
     exit();
 
 } else {
-    header('Location: leave-application.php');
+    header('Location: ../leave-application.php');
     exit();
 }
 ?>

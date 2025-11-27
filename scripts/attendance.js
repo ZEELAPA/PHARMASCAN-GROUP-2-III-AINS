@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData(nfcForm);
 
         try {
-            const response = await fetch('process_attendance.php', {
+            const response = await fetch('handlers/process_attendance.php', {
                 method: 'POST',
                 body: formData
             });

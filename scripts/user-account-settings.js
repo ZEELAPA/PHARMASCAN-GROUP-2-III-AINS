@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         confirmNfcBtn.disabled = true;
 
         // AJAX Request to Verify User
-        fetch('verify-current-user.php', {
+        fetch('handlers/verify-current-user.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `nfcCode=${encodeURIComponent(code)}&nfcPassword=${encodeURIComponent(pass)}`

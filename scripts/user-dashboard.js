@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchEvents(year, month) {
         try {
             // Reusing the endpoint from leave-application if available
-            const response = await fetch(`get-calendar-events.php?year=${year}&month=${month + 1}`);
+            const response = await fetch(`handlers/get-calendar-events.php'?year=${year}&month=${month + 1}`);
             if (!response.ok) throw new Error('Network response failed');
             return await response.json();
         } catch (error) {

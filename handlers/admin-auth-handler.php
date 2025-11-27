@@ -1,7 +1,7 @@
 <?php
-    // admin-auth-handler.php
+    // handlers/admin-auth-handler.php
     session_start();
-    include('sqlconnect.php');
+    include('../sqlconnect.php');
 
     header('Content-Type: application/json');
 

@@ -1,5 +1,5 @@
 <?php
-include('sqlconnect.php');
+include('../sqlconnect.php');
 
 $year = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
 $month = isset($_GET['month']) ? intval($_GET['month']) : date('m');
@@ -8,7 +8,7 @@ $month = isset($_GET['month']) ? intval($_GET['month']) : date('m');
 $outputData = [];
 
 // --- STEP 1: LOAD BASE STATUSES (CORRECTED LOGIC) ---
-$jsonFilePath = 'calendar-events.json';
+$jsonFilePath = '../calendar-events.json';
 if (file_exists($jsonFilePath)) {
     $allBaseEvents = json_decode(file_get_contents($jsonFilePath), true);
     if (is_array($allBaseEvents)) {

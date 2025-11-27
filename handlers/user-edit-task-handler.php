@@ -1,8 +1,8 @@
 <?php
 // 1. Include the functions file at the top
 
-require 'auth.php'; 
-require 'sqlconnect.php'; 
+require '../auth.php'; 
+require '../sqlconnect.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($taskID)) {
         add_toast('Error: Task ID is missing.', 'error');
-        header("Location: user-dashboard.php");
+        header("Location: ../user-dashboard.php");
         exit();
     }
 
@@ -31,25 +31,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             add_toast('Task updated successfully!', 'success');
             
             // 3. Redirect without the URL parameter
-            header("Location: user-dashboard.php");
+            header("Location: ../user-dashboard.php");
             exit();
         } else {
             add_toast('Error: Could not update the task.', 'error');
-            header("Location: user-dashboard.php");
+            header("Location: ../user-dashboard.php");
             exit();
         }
         
         $stmt->close();
     } else {
         add_toast('Error preparing the database request.', 'error');
-        header("Location: user-dashboard.php");
+        header("Location: ../user-dashboard.php");
         exit();
     }
 
     $conn->close();
 
 } else {
-    header("Location: user-dashboard.php");
+    header("Location: ../user-dashboard.php");
     exit();
 }
 ?>

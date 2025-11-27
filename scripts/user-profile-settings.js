@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
         nfcStatus.textContent = 'Verifying...';
         
         // IMPORTANT: Point this to your actual auth handler
-        fetch('verify-current-user.php', {
+        fetch('handlers/verify-current-user.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `nfcCode=${encodeURIComponent(code)}&nfcPassword=${encodeURIComponent(pass)}`

@@ -4,8 +4,6 @@
     require_admin();
 
     include('sqlconnect.php');
-
-
 ?>
 
 <!DOCTYPE html>

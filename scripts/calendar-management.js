@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ... (fetchEvents function remains unchanged) ...
     async function fetchEvents(year, month) {
         try {
-            const response = await fetch(`get-calendar-events.php?year=${year}&month=${month + 1}`);
+            const response = await fetch(`handlers/get-calendar-events.php?year=${year}&month=${month + 1}`);
             if (!response.ok) throw new Error('Network response was not ok.');
             return await response.json();
         } catch (error) {
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     async function saveEvents() {
         try {
-            const response = await fetch('save-calendar-events.php', {
+            const response = await fetch('handlers/save-calendar-events.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(currentEventsData)

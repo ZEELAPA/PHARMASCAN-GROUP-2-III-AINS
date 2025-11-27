@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'sqlconnect.php';
+require '../sqlconnect.php';
 
 header('Content-Type: application/json');
 

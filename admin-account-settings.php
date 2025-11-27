@@ -77,7 +77,7 @@
                             <h1>Account Security</h1>
                         </div>
                         <hr>
-                        <form class="accountForm" id="accountForm" action="admin-settings-handler.php" method="POST">
+                        <form class="accountForm" id="accountForm" action="handlers/admin-settings-handler.php" method="POST">
                             <div class="form-container">
                                 <div id="profileContent" class="tab-content">
                                     <div class="form-row">

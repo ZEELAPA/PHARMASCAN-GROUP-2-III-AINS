@@ -1,13 +1,13 @@
 <?php
 session_start();
-require_once 'sqlconnect.php';
-require_once 'auth.php'; // Contains add_toast()
-require_once 'mailer.php'; 
+require_once '../sqlconnect.php';
+require_once '../auth.php'; // Contains add_toast()
+require_once '../mailer.php'; 
 
 require_admin();
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    header('Location: leave-management.php');
+    header('Location: ../leave-management.php');
     exit();
 }
 
@@ -23,7 +23,7 @@ if (isset($_POST['action'], $_POST['leaveID'], $_POST['accountID'])) {
 
     if ($newStatus !== 'Approved' && $newStatus !== 'Rejected') {
         add_toast("Invalid action specified.", "error");
-        header('Location: leave-management.php');
+        header('Location: ../leave-management.php');
         exit();
     }
 
@@ -98,11 +98,11 @@ if (isset($_POST['action'], $_POST['leaveID'], $_POST['accountID'])) {
 
         $conn->commit();
         add_toast("Leave status updated successfully.", "success");
-        header('Location: leave-management.php');
+        header('Location: ../leave-management.php');
     } catch (Exception $e) {
         $conn->rollback();
         add_toast("Error: " . $e->getMessage(), "error");
-        header('Location: leave-management.php');
+        header('Location: ../leave-management.php');
     }
     $conn->close();
     exit();
@@ -123,7 +123,7 @@ elseif (isset($_POST['accountID'], $_POST['leaveType'], $_POST['startDate'], $_P
     // --- Server-side Validation ---
     if (empty($accountID) || empty($leaveType) || empty($startDate) || empty($endDate)) {
         add_toast("Required fields are missing.", "error");
-        header('Location: leave-management.php');
+        header('Location: ../leave-management.php');
         exit();
     }
     
@@ -139,12 +139,12 @@ elseif (isset($_POST['accountID'], $_POST['leaveType'], $_POST['startDate'], $_P
 
     if ($leaveType === 'Sick Leave' && $duration > $balances['SickLeaveBalance']) {
         add_toast("Insufficient Sick Leave balance.", "error");
-        header('Location: leave-management.php');
+        header('Location: ../leave-management.php');
         exit();
     }
     if ($leaveType === 'Vacation Leave' && $duration > $balances['VacationLeaveBalance']) {
         add_toast("Insufficient Vacation Leave balance.", "error");
-        header('Location: leave-management.php');
+        header('Location: ../leave-management.php');
         exit();
     }
     
@@ -207,11 +207,11 @@ elseif (isset($_POST['accountID'], $_POST['leaveType'], $_POST['startDate'], $_P
 
         $conn->commit();
         add_toast("Leave created successfully.", "success");
-        header('Location: leave-management.php');
+        header('Location: ../leave-management.php');
     } catch (Exception $e) {
         $conn->rollback();
         add_toast("Error: " . $e->getMessage(), "error");
-        header('Location: leave-management.php');
+        header('Location: ../leave-management.php');
     }
     $conn->close();
     exit();
@@ -244,12 +244,12 @@ elseif (isset($_POST['archive_leave_id'])) {
 
         $conn->commit();
         add_toast("Leave record archived successfully.", "success");
-        header('Location: leave-management.php');
+        header('Location: ../leave-management.php');
 
     } catch (Exception $e) {
         $conn->rollback();
         add_toast("Archive Error: " . $e->getMessage(), "error");
-        header('Location: leave-management.php');
+        header('Location: ../leave-management.php');
     }
     $conn->close();
     exit();
@@ -257,7 +257,7 @@ elseif (isset($_POST['archive_leave_id'])) {
 
 else {
     add_toast("Invalid request.", "error");
-    header('Location: leave-management.php');
+    header('Location: ../leave-management.php');
     exit();
 }
 ?>

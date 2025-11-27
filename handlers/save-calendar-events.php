@@ -1,5 +1,5 @@
 <?php
-include('auth.php');
+include('../auth.php');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -16,7 +16,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit;
 }
 
-$filePath = 'calendar-events.json';
+$filePath = '../calendar-events.json';
 $allEvents = [];
 
 // Read the existing full data from the JSON file

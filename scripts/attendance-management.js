@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedDate = datePicker.value;
         const selectedEmployeeId = searchIdInput.value;
         
-        const url = `get-attendance-data.php?date=${selectedDate}&employee_id=${selectedEmployeeId}&view_type=${currentView}`;
+        const url = `handlers/get-attendance-data.php?date=${selectedDate}&employee_id=${selectedEmployeeId}&view_type=${currentView}`;
 
         try {
             const response = await fetch(url);
@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const year = dateObj.getFullYear();
         const month = dateObj.getMonth() + 1; // JS months are 0-11
 
-        let url = 'export-management.php?';
+        let url = 'handlers/export-management.php?';
 
         if (exportType === 'monthly') {
             // Monthly uses the main page's date picker to determine the month and year

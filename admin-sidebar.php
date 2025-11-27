@@ -106,12 +106,12 @@
                             Account</a>
                         </li>
                     </ul>
-                    <div class="logout-container">
+                    <div class="handlers/logout-container">
                         <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M17.7083 7.29167L16.2395 8.76042L18.927 11.4583H8.33325V13.5417H18.927L16.2395 16.2292L17.7083 17.7083L22.9166 12.5M4.16659 5.20833H12.4999V3.125H4.16659C3.02075 3.125 2.08325 4.0625 2.08325 5.20833V19.7917C2.08325 20.9375 3.02075 21.875 4.16659 21.875H12.4999V19.7917H4.16659V5.20833Z" fill="#667E97"/>
                         </svg>
                         <?php ?>
-                        <a href="logout.php">Log Out</a>
+                        <a href="handlers/logout.php">Log Out</a>
                     </div>
                 </div>
             </div>

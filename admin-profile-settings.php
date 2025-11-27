@@ -82,7 +82,7 @@
                             <h1>Profile Information</h1>
                         </div>
                         <hr>
-                        <form id="profileForm" action="admin-settings-handler.php" method="POST" enctype="multipart/form-data">
+                        <form id="profileForm" action="handlers/admin-settings-handler.php" method="POST" enctype="multipart/form-data">
                             <div class="form-container">
                                 <div id="profileContent" class="tab-content">
                                     <div class="profile-pic-container">

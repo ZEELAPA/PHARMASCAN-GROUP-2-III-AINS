@@ -1,5 +1,5 @@
 <?php
-    include('sqlconnect.php');
+    include('../sqlconnect.php');
 
     // Get parameters from the AJAX request
     $date = $_GET['date'] ?? date('Y-m-d');

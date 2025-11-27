@@ -1,6 +1,6 @@
 <?php
     // search-suggestions.php
-    include('sqlconnect.php');
+    include('../sqlconnect.php');
     header('Content-Type: application/json');
 
     $response = [

@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
         adminNfcStatus.textContent = 'Verifying...';
         adminNfcStatus.className = 'status-listening';
 
-        fetch('admin-auth-handler.php', {
+        fetch('handlers/admin-auth-handler.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `nfcCode=${encodeURIComponent(adminCode)}&nfcPassword=${encodeURIComponent(adminPassword)}`

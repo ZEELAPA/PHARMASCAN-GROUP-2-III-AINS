@@ -1,8 +1,8 @@
 <?php
     session_start();
-    include('auth.php');
+    include('../auth.php');
 
-    include('sqlconnect.php');
+    include('../sqlconnect.php');
     
     if (!$conn || $conn->connect_error) {
         // A more user-friendly error page should be used in production
@@ -12,7 +12,7 @@
     // Check if the request method is POST
     if ($_SERVER["REQUEST_METHOD"] !== "POST") {
         // If not a POST request, redirect back to the main page
-        header("Location: user-management.php");
+        header("Location: ../user-management.php");
         exit();
     }
 
@@ -29,13 +29,13 @@
             break;
         case 'archive_employee':
             add_toast("Archive feature is not yet implemented.", "info");
-            header("Location: user-management.php");
+            header("Location: ../user-management.php");
             exit();
 
         default:
             // Handle unexpected action
             add_toast("Invalid action performed", "error");
-            header("Location: user-management.php");
+            header("Location: ../user-management.php");
             exit();
     }
 
@@ -74,19 +74,19 @@
         // 3. Validation
         if (!empty($nfcPassword) && !preg_match('/^\d{4}$/', $nfcPassword)) {
             add_toast("NFC Password must be exactly 4 numbers.", "error");
-            header("Location: user-management.php");
+            header("Location: ../user-management.php");
             exit();
         }
         
         if (empty($employeeID) || empty($firstName) || empty($lastName) || empty($username) || empty($email)) {
             add_toast("Please fill all required fields.", "error");
-            header("Location: user-management.php");
+            header("Location: ../user-management.php");
             exit();
         }
         
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             add_toast("Please enter a valid email address.", "error");
-            header("Location: user-management.php");
+            header("Location: ../user-management.php");
             exit();
         }
 
@@ -108,7 +108,7 @@
                 // 3. If there is only 1 (or fewer), block the change
                 if ($total_admins <= 1) {
                     add_toast("Action Denied: You cannot demote the last Administrator.", "error");
-                    header("Location: user-management.php");
+                    header("Location: ../user-management.php");
                     exit();
                 }
             }
@@ -156,7 +156,7 @@
                     !preg_match('/[^a-zA-Z0-9]/', $password)) {
                     
                     add_toast("Password must be 8+ chars, include uppercase, lowercase, number, and special char.", "error");
-                    header("Location: user-management.php");
+                    header("Location: ../user-management.php");
                     exit();
                 }
                 // ---------------------------------
@@ -178,7 +178,7 @@
             add_toast("Error updating details: " . $e->getMessage(), "error");
         }
 
-        header("Location: user-management.php");
+        header("Location: ../user-management.php");
         exit();
     }
     function handle_add_employee($conn) {
@@ -252,7 +252,7 @@
         if (!empty($errors)) {
             $_SESSION['form_errors'] = $errors;
             $_SESSION['form_data'] = $_POST;
-            header("Location: user-management.php#add-employee-error");
+            header("Location: ../user-management.php#add-employee-error");
             exit();
         }
 
@@ -289,7 +289,7 @@
             add_toast("Error adding employee: " . $e->getMessage(), "error");
         }
 
-        header("Location: user-management.php");
+        header("Location: ../user-management.php");
         exit();
     }
 

@@ -1,7 +1,7 @@
 <?php
     header('Content-Type: application/json');
 
-    $notesFile = 'admin_notes.json';
+    $notesFile = '../admin_notes.json';
 
     // Helper function to get notes from the file
     function getNotes($file) {

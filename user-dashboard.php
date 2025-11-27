@@ -284,7 +284,7 @@
                 <h2 id="modalTitle">Add New Task</h2>
                 <span class="close-btn">&times;</span>
             </div>
-            <form id="taskForm" action="user-task-handler.php" method="POST">
+            <form id="taskForm" action="handlers/user-task-handler.php" method="POST">
                 <input type="hidden" id="editTaskID" name="taskID" value="">
 
                 <div class="form-group">

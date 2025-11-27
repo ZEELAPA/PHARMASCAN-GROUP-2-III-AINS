@@ -1,7 +1,7 @@
 <?php
 // 1. Include the functions file at the top
-require 'auth.php'; 
-require 'sqlconnect.php';
+require '../auth.php'; 
+require '../sqlconnect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -24,26 +24,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             add_toast('Task created successfully!', 'success');
             
             // 3. Redirect without the URL parameter
-            header("Location: user-dashboard.php");
+            header("Location: ../user-dashboard.php");
             exit();
         } else {
             // (Optional but recommended) Add an error toast on failure
             add_toast('Error: Could not create the task.', 'error');
-            header("Location: user-dashboard.php");
+            header("Location: ../user-dashboard.php");
             exit();
         }
 
         $stmt->close();
     } else {
         add_toast('Error preparing the database request.', 'error');
-        header("Location: user-dashboard.php");
+        header("Location: ../user-dashboard.php");
         exit();
     }
 
     $conn->close();
 
 } else {
-    header("Location: user-dashboard.php");
+    header("Location: ../user-dashboard.php");
     exit();
 }
 ?>

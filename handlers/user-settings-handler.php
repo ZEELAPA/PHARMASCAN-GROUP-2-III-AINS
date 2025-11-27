@@ -1,17 +1,18 @@
 <?php
 
-include('auth.php');
-include('sqlconnect.php');
+include('../auth.php');
+include('../sqlconnect.php');
 
 // --- Pre-flight Checks ---
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("Location: admin-dashboard.php");
+    header("Location: ../user-dashboard.php"); // Redirect to a safe page if accessed directly
     exit();
 }
 
 if (!isset($_SESSION['AccountID'])) {
+    // User must be logged in to make changes
     add_toast("You must be logged in to perform this action.", "error");
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -28,13 +29,13 @@ switch ($action) {
         break;
     default:
         add_toast("Invalid action performed.", "error");
-        header("Location: admin-profile-settings.php");
+        header("Location: ../user-profile-settings.php"); // Default redirect
         exit();
 }
 
 // --- Function to Handle Profile Updates ---
 function handle_save_profile($conn, $accountID) {
-    // 1. Get data
+    // 1. Get data from POST
     $firstName = trim($_POST['firstName']);
     $lastName = trim($_POST['lastName']);
     $gender = $_POST['gender'];
@@ -51,12 +52,12 @@ function handle_save_profile($conn, $accountID) {
     // 3. Validation
     if (empty($firstName) || empty($lastName) || empty($email)) {
         add_toast("First Name, Last Name, and Email are required.", "warning");
-        header("Location: admin-profile-settings.php");
+        header("Location: ../user-profile-settings.php");
         exit();
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         add_toast("Please enter a valid email address.", "warning");
-        header("Location: admin-profile-settings.php");
+        header("Location: ../user-profile-settings.php");
         exit();
     }
 
@@ -66,7 +67,7 @@ function handle_save_profile($conn, $accountID) {
     $stmt_check_email->execute();
     if ($stmt_check_email->get_result()->num_rows > 0) {
         add_toast("This email address is already in use by another account.", "error");
-        header("Location: admin-profile-settings.php");
+        header("Location: ../user-profile-settings.php");
         exit();
     }
     $stmt_check_email->close();
@@ -84,9 +85,11 @@ function handle_save_profile($conn, $accountID) {
 
         // Step B: Update tblpersonalinfo
         if ($newProfilePic) {
+            // Update with new picture
             $stmt_personal = $conn->prepare("UPDATE tblpersonalinfo SET FirstName = ?, LastName = ?, Gender = ?, Age = ?, ContactNumber = ?, ProfilePicture = ? WHERE PersonalID = ?");
             $stmt_personal->bind_param("sssissi", $firstName, $lastName, $gender, $age, $contactNumber, $newProfilePic, $personalID);
         } else {
+            // Update without changing picture
             $stmt_personal = $conn->prepare("UPDATE tblpersonalinfo SET FirstName = ?, LastName = ?, Gender = ?, Age = ?, ContactNumber = ? WHERE PersonalID = ?");
             $stmt_personal->bind_param("sssisi", $firstName, $lastName, $gender, $age, $contactNumber, $personalID);
         }
@@ -106,14 +109,14 @@ function handle_save_profile($conn, $accountID) {
         $conn->rollback();
         add_toast("Error updating profile: " . $e->getMessage(), "error");
     }
-    
-    header("Location: admin-profile-settings.php");
+
+    header("Location: ../user-profile-settings.php");
     exit();
 }
 
 // --- Function to Handle Account Security Updates ---
 function handle_save_account($conn, $accountID) {
-    // 1. Get data
+    // 1. Get data from POST
     $username = trim($_POST['username']);
     $oldPassword = $_POST['oldPassword'];
     $newPassword = $_POST['newPassword'];
@@ -122,21 +125,21 @@ function handle_save_account($conn, $accountID) {
     // 2. Validation
     if (empty($username)) {
         add_toast("Username cannot be empty.", "warning");
-        header("Location: admin-account-settings.php");
+        header("Location: ../user-account-settings.php");
         exit();
     }
     if (!empty($nfcPassword) && !preg_match('/^\d{4}$/', $nfcPassword)) {
         add_toast("NFC Password must be exactly 4 digits.", "warning");
-        header("Location: admin-account-settings.php");
+        header("Location: ../user-account-settings.php");
         exit();
     }
-    // Check if username is already used
+    // Check if username is already used by another account
     $stmt_check_user = $conn->prepare("SELECT AccountID FROM tblaccounts WHERE Username = ? AND AccountID != ?");
     $stmt_check_user->bind_param("si", $username, $accountID);
     $stmt_check_user->execute();
     if ($stmt_check_user->get_result()->num_rows > 0) {
         add_toast("This username is already taken.", "error");
-        header("Location: admin-account-settings.php");
+        header("Location: ../user-account-settings.php");
         exit();
     }
     $stmt_check_user->close();
@@ -147,37 +150,36 @@ function handle_save_account($conn, $accountID) {
     $types = "";
 
     if (!empty($newPassword)) {
-        // --- Password Strength Validation ---
+
         if (strlen($newPassword) < 8) {
             add_toast("Password must be at least 8 characters long.", "warning");
-            header("Location: admin-account-settings.php");
+            header("Location: ../user-account-settings.php");
             exit();
         }
         if (!preg_match('/[A-Z]/', $newPassword)) {
             add_toast("Password must contain at least one uppercase letter.", "warning");
-            header("Location: admin-account-settings.php");
+            header("Location: ../user-account-settings.php");
             exit();
         }
         if (!preg_match('/[a-z]/', $newPassword)) {
             add_toast("Password must contain at least one lowercase letter.", "warning");
-            header("Location: admin-account-settings.php");
+            header("Location: ../user-account-settings.php");
             exit();
         }
         if (!preg_match('/[0-9]/', $newPassword)) {
             add_toast("Password must contain at least one number.", "warning");
-            header("Location: admin-account-settings.php");
+            header("Location: ../user-account-settings.php");
             exit();
         }
         if (!preg_match('/[^a-zA-Z0-9]/', $newPassword)) {
             add_toast("Password must contain at least one special character.", "warning");
-            header("Location: admin-account-settings.php");
+            header("Location: ../user-account-settings.php");
             exit();
         }
-        // ------------------------------------
-
+        
         if (empty($oldPassword)) {
             add_toast("Please enter your old password to set a new one.", "warning");
-            header("Location: admin-account-settings.php");
+            header("Location: ../user-account-settings.php");
             exit();
         }
 
@@ -195,12 +197,12 @@ function handle_save_account($conn, $accountID) {
             $types .= "s";
         } else {
             add_toast("The old password you entered is incorrect.", "error");
-            header("Location: admin-account-settings.php");
+            header("Location: ../user-account-settings.php");
             exit();
         }
     }
 
-    // Prepare and execute
+    // Prepare and execute the final update statement
     $sql = "UPDATE tblaccounts SET Username = ?, ICPassword = ? $passwordUpdateSQL WHERE AccountID = ?";
     $final_params = array_merge([$username, $nfcPassword], $params, [$accountID]);
     $final_types = "ss" . $types . "i";
@@ -215,10 +217,9 @@ function handle_save_account($conn, $accountID) {
     }
     $stmt_update->close();
 
-    header("Location: admin-account-settings.php");
+    header("Location: ../user-account-settings.php");
     exit();
 }
-
 function upload_profile_picture($file) {
     $targetDir = "images/";
     if ($file['error'] === UPLOAD_ERR_OK) {

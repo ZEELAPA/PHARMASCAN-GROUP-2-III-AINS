@@ -1,9 +1,9 @@
 <?php
 // (0) SETUP
-require 'vendor/autoload.php';
-include('auth.php');
+require '../vendor/autoload.php';
+include('../auth.php');
 require_admin();
-include('sqlconnect.php');
+include('../sqlconnect.php');
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -157,11 +157,11 @@ function exportWeeklyReport($conn, $date, $employeeId) {
 
 
 // ==================================================================
-// DATA FETCHING FUNCTIONS - SYNCHRONIZED WITH get-attendance-data.php
+// DATA FETCHING FUNCTIONS - SYNCHRONIZED WITH handlers/get-attendance-data.php
 // ==================================================================
 
 function getDailyRecords($conn, $date, $employeeId) {
-    // THIS QUERY IS NOW IDENTICAL TO THE ONE IN get-attendance-data.php
+    // THIS QUERY IS NOW IDENTICAL TO THE ONE IN handlers/get-attendance-data.php
     $query = "SELECT 
                 CONCAT_WS(' ', info.FirstName, info.LastName) AS FullName,
                 att.TimeIn,
@@ -189,7 +189,7 @@ function getDailyRecords($conn, $date, $employeeId) {
 }
 
 function getWeeklyRecords($conn, $start, $end, $employeeId) {
-    // THIS QUERY IS NOW IDENTICAL TO THE (IMPROVED) ONE IN get-attendance-data.php
+    // THIS QUERY IS NOW IDENTICAL TO THE (IMPROVED) ONE IN handlers/get-attendance-data.php
     $query = "SELECT 
                 CONCAT_WS(' ', info.FirstName, info.LastName) AS FullName,
                 att.AttendanceDate,
@@ -231,7 +231,7 @@ function downloadSpreadsheet($spreadsheet, $filename) {
 }
 
 function exportMonthlyDTR($conn, $employeeId, $year, $month) {
-    // This is nearly identical to your previous export-attendance.php script
+    // This is nearly identical to your previous handlers/export-attendance.php script
     // We just need a function to get AccountID from EmployeeID
     $stmt = $conn->prepare("SELECT AccountID FROM tblaccounts WHERE EmployeeID = ?");
     $stmt->bind_param("i", $employeeId);

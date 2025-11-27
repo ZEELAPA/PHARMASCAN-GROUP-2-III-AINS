@@ -1,5 +1,5 @@
 <?php
-require 'sqlconnect.php'; // Ensure this path is correct
+require '../sqlconnect.php'; // Ensure this path is correct
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($stmt->execute()) {
             // Success: redirect back to the task page
-            header("Location: task-management.php?status=updated");
+            header("Location: ../task-management.php?status=updated");
             exit();
         } else {
             echo "Error executing update: " . $stmt->error;
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 } else {
     // Redirect if not a POST request
-    header("Location: task-management.php");
+    header("Location: ../task-management.php");
     exit();
 }
 ?>

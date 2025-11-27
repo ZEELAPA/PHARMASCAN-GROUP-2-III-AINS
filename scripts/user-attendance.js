@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedDate = datePicker.value;
         const selectedEmployeeId = searchIdInput.value;
         
-        const url = `get-attendance-data.php?date=${selectedDate}&employee_id=${selectedEmployeeId}&view_type=${currentView}`;
+        const url = `handlers/get-attendance-data.php?date=${selectedDate}&employee_id=${selectedEmployeeId}&view_type=${currentView}`;
 
         try {
             const response = await fetch(url);
@@ -325,8 +325,8 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmExportBtn.textContent = "Verifying...";
             confirmExportBtn.disabled = true;
 
-            // AJAX Request to verify-password.php
-            fetch('verify-password.php', {
+            // AJAX Request to handlers/verify-password.php
+            fetch('handlers/verify-password.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: 'password=' + encodeURIComponent(password)

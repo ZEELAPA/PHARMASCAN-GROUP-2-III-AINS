@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Change modal appearance for "Edit" mode
         modalTitle.textContent = 'Edit Task';
         submitButton.textContent = 'Update Task';
-        taskForm.action = 'edit-task-handler.php'; 
+        taskForm.action = 'handlers/edit-task-handler.php'; 
 
         // Populate form fields...
         editTaskIDInput.value = card.dataset.taskId;
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set modal appearance for "Add" mode
         modalTitle.textContent = 'Add New Task';
         submitButton.textContent = 'Assign Task';
-        taskForm.action = 'task-handler.php'; 
+        taskForm.action = 'handlers/task-handler.php'; 
         
         // Reset the form and clear the hidden ID
         taskForm.reset();
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const currentUserID = CURRENT_USER_ACCOUNT_ID; 
 
-                fetch('archive-task-handler.php', {
+                fetch('handlers/archive-task-handler.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchEvents(year, month) {
         try {
             // Reusing the endpoint from leave-application if available
-            const response = await fetch(`get-calendar-events.php?year=${year}&month=${month + 1}`);
+            const response = await fetch(`handlers/get-calendar-events.php'?year=${year}&month=${month + 1}`);
             if (!response.ok) throw new Error('Network response failed');
             return await response.json();
         } catch (error) {

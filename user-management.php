@@ -203,7 +203,7 @@
             <?php endif; ?>
             
             <!-- Form that wraps both tab contents -->
-            <form id="employeeForm" action="employee-handler.php" method="POST" enctype="multipart/form-data">
+            <form id="employeeForm" action="handlers/employee-handler.php" method="POST" enctype="multipart/form-data">
                 <!-- Hidden input to know which employee is being edited -->
                 <input type="hidden" id="editEmployeeID" name="employeeID" value="">
 

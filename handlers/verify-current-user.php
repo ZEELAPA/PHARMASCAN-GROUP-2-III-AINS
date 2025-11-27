@@ -1,6 +1,6 @@
 <?php
 /**
- * verify-current-user.php
+ * handlers/verify-current-user.php
  * Handles AJAX requests to verify the currently logged-in user's NFC credentials.
  */
 
@@ -11,7 +11,7 @@ header('Content-Type: application/json');
 session_start();
 
 // Include database connection
-include('sqlconnect.php');
+include('../sqlconnect.php');
 
 // 1. Check if user is logged in
 if (!isset($_SESSION['AccountID'])) {

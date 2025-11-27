@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Cancel Application',
                 'Are you sure you want to cancel this leave application?',
                 function() {
-                    window.location.href = `cancel-leave.php?leaveID=${leaveId}&accountID=${accountId}`;
+                    window.location.href = `handlers/cancel-leave.php?leaveID=${leaveId}&accountID=${accountId}`;
                 }
             );
         });
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function fetchEvents(year, month) {
         try {
-            const response = await fetch(`get-calendar-events.php?year=${year}&month=${month + 1}`);
+            const response = await fetch(`handlers/get-calendar-events.php'?year=${year}&month=${month + 1}`);
             if (!response.ok) throw new Error('Network response failed');
             return await response.json();
         } catch (error) {
