@@ -1,32 +1,56 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const profileForm = document.getElementById('profileForm');
+    // --- Image Preview Logic ---
     const profilePicUpload = document.getElementById('profilePicUpload');
     const profilePreview = document.getElementById('profilePreview');
-    if (profileForm) {
-        profileForm.addEventListener('submit', function(event) {
-            const confirmed = confirm('Are you sure you want to save these changes?');
-            if (!confirmed) {
-                event.preventDefault(); // Stop form submission if user cancels
-            }
-        });
-    }
 
     if (profilePicUpload && profilePreview) {
         profilePicUpload.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
-                
                 reader.onload = function(e) {
                     profilePreview.src = e.target.result;
                 }
-                
                 reader.readAsDataURL(file);
             }
         });
     }
 
-    // --- NFC Logic Variables ---
+    // --- Modal Confirmation Logic ---
+    let targetForm = null;
+
+    // Define globally so inline onclick works
+    window.openModal = function(formId) {
+        targetForm = document.getElementById(formId);
+        const modal = document.getElementById('confirmationModal');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    window.closeModal = function() {
+        const modal = document.getElementById('confirmationModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        targetForm = null;
+    }
+
+    window.confirmSubmit = function() {
+        if (targetForm) {
+            targetForm.submit();
+        }
+    }
+
+    // Close modal if user clicks outside the modal box
+    window.onclick = function(event) {
+        const modal = document.getElementById('confirmationModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    // --- NFC Logic Variables & Setup ---
     const nfcModal = document.getElementById('nfcAuthModal');
     const nfcInput = document.getElementById('nfcAuthCode');
     const nfcPassword = document.getElementById('nfcAuthPassword');
@@ -35,16 +59,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const confirmBtn = document.getElementById('confirmNfcBtn');
     const cancelBtn = document.getElementById('cancelNfcBtn');
     
-    // Select the Account Settings link (adjust selector if needed based on exact HTML structure)
-    // Looking at your PHP, the link contains 'account-settings.php'
-    const accountSettingsLink = document.querySelector('a[href$="account-settings.php"]');
+    const accountSettingsLink = document.querySelector('a[href$="admin-account-settings.php"]');
 
     let nfcBuffer = '';
     let lastKeyTime = Date.now();
     let isListening = false;
     let onSuccessCallback = null;
 
-    // --- Event Listener for Link ---
+    // --- Event Listener for Account Settings Link ---
     if(accountSettingsLink) {
         accountSettingsLink.addEventListener('click', function(e) {
             e.preventDefault();
@@ -59,6 +81,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const contactInput = document.getElementById('contactNumber');
+    if (contactInput) {
+        contactInput.addEventListener('input', function(e) {
+            // Remove any non-numeric characters
+            let value = this.value.replace(/[^0-9]/g, '');
+            
+            // Optional: Prevent starting with 0 or 63 if user tries to type them
+            // If they type '09', remove the 0
+            if (value.startsWith('0')) {
+                value = value.substring(1);
+            }
+            // If they paste '639', remove the 63
+            if (value.startsWith('63')) {
+                value = value.substring(2);
+            }
+
+            this.value = value;
+        });
+
+        // Prevent pasting non-numeric content
+        contactInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+            const numericData = pastedData.replace(/[^0-9]/g, '');
+            document.execCommand('insertText', false, numericData);
+        });
+    }
+
     // --- Modal Functions ---
     function openNfcModal() {
         nfcModal.classList.add('is-open');
@@ -70,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
         nfcStatus.className = 'nfc-status status-waiting';
         nfcError.textContent = '';
         
-        // Slight delay to focus
         setTimeout(() => nfcInput.focus(), 100);
     }
 
@@ -79,47 +128,34 @@ document.addEventListener('DOMContentLoaded', function() {
         isListening = false;
     }
 
-    cancelBtn.addEventListener('click', closeNfcModal);
-
-    // --- Scanner Logic (Extracted from user-management.js) ---
-    nfcInput.addEventListener('focus', () => { 
-        isListening = true; 
-        nfcStatus.textContent = 'Listening...';
-        nfcStatus.className = 'nfc-status status-listening';
-    });
-    
-    nfcInput.addEventListener('blur', () => { isListening = false; });
+    if(cancelBtn) cancelBtn.addEventListener('click', closeNfcModal);
 
     // --- Scanner Logic ---
-    nfcInput.addEventListener('focus', () => { 
-        isListening = true; 
-        nfcStatus.textContent = 'Listening...';
-        nfcStatus.className = 'nfc-status status-listening';
-    });
-    
-    nfcInput.addEventListener('blur', () => { isListening = false; });
+    if(nfcInput) {
+        nfcInput.addEventListener('focus', () => { 
+            isListening = true; 
+            nfcStatus.textContent = 'Listening...';
+            nfcStatus.className = 'nfc-status status-listening';
+        });
+        
+        nfcInput.addEventListener('blur', () => { isListening = false; });
+    }
 
     document.addEventListener('keydown', (e) => {
         if (!isListening) return;
-        
-        // Allow Tab to escape focus, otherwise block default typing
         if (e.key === 'Tab') return;
 
-        // Prevent manual typing from appearing in the input box visually
-        // We only want the value to appear if it passes the buffer check below
         e.preventDefault();
 
         const currentTime = Date.now();
-        // If the gap between keystrokes is too long (> 50ms), it's likely manual typing
-        // 200ms is generous, 50-100ms is standard for scanners.
         if (currentTime - lastKeyTime > 200) {
             nfcBuffer = ''; 
         }
         lastKeyTime = currentTime;
 
         if (e.key === 'Enter') {
-            if (nfcBuffer.length > 3) { // Assume valid code length
-                nfcInput.value = nfcBuffer; // Manually set the value now that it's valid
+            if (nfcBuffer.length > 3) { 
+                nfcInput.value = nfcBuffer; 
                 nfcStatus.textContent = 'Card Scanned';
                 nfcStatus.className = 'nfc-status status-success';
                 nfcPassword.disabled = false;
@@ -131,49 +167,116 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             nfcBuffer = '';
         } else if (e.key.length === 1) {
-            // Only add printable characters to buffer
             nfcBuffer += e.key;
         }
     });
 
     // --- Password Validation ---
-    nfcPassword.addEventListener('input', () => {
-        if (/^\d{4}$/.test(nfcPassword.value)) {
-            confirmBtn.disabled = false;
-            nfcError.textContent = '';
-        } else {
-            confirmBtn.disabled = true;
-        }
-    });
+    if(nfcPassword) {
+        nfcPassword.addEventListener('input', () => {
+            if (/^\d{4}$/.test(nfcPassword.value)) {
+                confirmBtn.disabled = false;
+                nfcError.textContent = '';
+            } else {
+                confirmBtn.disabled = true;
+            }
+        });
+    }
 
     // --- Server Verification ---
-    confirmBtn.addEventListener('click', () => {
-        const code = nfcInput.value; // In a real scanner, this might need to come from the buffer if input is cleared
-        const pass = nfcPassword.value;
+    if(confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+            const code = nfcInput.value;
+            const pass = nfcPassword.value;
 
-        nfcStatus.textContent = 'Verifying...';
-        
-        // IMPORTANT: Point this to your actual auth handler
-        fetch('handlers/verify-current-user.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `nfcCode=${encodeURIComponent(code)}&nfcPassword=${encodeURIComponent(pass)}`
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                closeNfcModal();
-                if (onSuccessCallback) onSuccessCallback();
-            } else {
-                nfcStatus.textContent = 'Invalid Credentials';
-                nfcStatus.className = 'nfc-status status-error';
-                nfcError.textContent = data.message || 'Authentication failed';
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            nfcError.textContent = 'Server Error';
+            nfcStatus.textContent = 'Verifying...';
+            
+            fetch('handlers/verify-current-user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `nfcCode=${encodeURIComponent(code)}&nfcPassword=${encodeURIComponent(pass)}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    closeNfcModal();
+                    if (onSuccessCallback) onSuccessCallback();
+                } else {
+                    nfcStatus.textContent = 'Invalid Credentials';
+                    nfcStatus.className = 'nfc-status status-error';
+                    nfcError.textContent = data.message || 'Authentication failed';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                nfcError.textContent = 'Server Error';
+            });
         });
-    });
+    }
 
+    
+    // --- SECURITY LOCK LOGIC ---
+    const securityPassInput = document.getElementById('securityPass');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const cancelLockBtn = document.getElementById('cancelLockBtn');
+    const securityError = document.getElementById('securityError');
+
+    if (securityPassInput && unlockBtn) {
+        // Function to handle verification
+        function verifyProfileAccess() {
+            const pass = securityPassInput.value;
+            
+            // UI Feedback
+            unlockBtn.textContent = 'Checking...';
+            unlockBtn.disabled = true;
+            securityError.style.display = 'none';
+
+            fetch('handlers/verify-profile-access.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'password=' + encodeURIComponent(pass)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    location.reload(); // Reload page to fetch data
+                } else {
+                    securityError.style.display = 'block';
+                    securityError.textContent = data.message || 'Incorrect Password';
+                    unlockBtn.textContent = 'Unlock';
+                    unlockBtn.disabled = false;
+                    securityPassInput.value = ''; // Clear input
+                    securityPassInput.focus();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                securityError.style.display = 'block';
+                securityError.textContent = 'Server Error. Please try again.';
+                unlockBtn.textContent = 'Unlock';
+                unlockBtn.disabled = false;
+            });
+        }
+
+        // Event Listeners
+        unlockBtn.addEventListener('click', verifyProfileAccess);
+
+        // Allow Enter key to submit
+        securityPassInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') { verifyProfileAccess(); }
+        });
+
+        // Redirect to Dashboard on Cancel
+        if(cancelLockBtn) {
+            cancelLockBtn.addEventListener('click', function() {
+                window.location.href = 'user-dashboard.php';
+            });
+        }
+    }
+
+    if(cancelLockBtn) {
+        cancelLockBtn.addEventListener('click', function() {
+            window.location.href = 'admin-dashboard.php';
+        });
+    }
 });

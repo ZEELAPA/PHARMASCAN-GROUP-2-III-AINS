@@ -38,7 +38,9 @@
                 JOIN
                     tblpersonalinfo AS p ON e.PersonalID = p.PersonalID
                 JOIN
-                    tbldepartment AS d ON e.DepartmentID = d.DepartmentID;";
+                    tbldepartment AS d ON e.DepartmentID = d.DepartmentID
+                WHERE
+                    e.EmploymentStatus != 'Archived';";
 
         if (!$stmt = $conn->prepare($query)) {
             error_log("Failed to prepare statement: " . $conn->error);
@@ -244,7 +246,10 @@
                     </div>
                     <div class="form-group">
                         <label for="contactNumber">Contact Number</label>
-                        <input type="text" id="contactNumber" name="contactNumber" value="">
+                        <div class="input-group">
+                            <span class="input-group-addon">+63</span>
+                            <input type="text" id="contactNumber" name="contactNumber" value="" placeholder="9123456789" maxlength="10">
+                        </div>
                     </div>
                 </div>
 
@@ -297,7 +302,7 @@
                             <option value="Active">Active</option>
                             <option value="Inactive" selected>Inactive</option>
                             <option value="On Leave">On Leave</option>
-                            <option value="Terminated">Terminated</option>
+                            <option value="Archived">Archived</option>
                         </select>
                     </div>
                     <div class="form-group">

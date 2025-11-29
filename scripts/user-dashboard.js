@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Change modal appearance for "Edit" mode
         modalTitle.textContent = 'Edit Task';
         submitButton.textContent = 'Update Task';
-        taskForm.action = 'user-edit-task-handler.php'; // Point form to the update script
+        taskForm.action = 'handlers/user-edit-task-handler.php'; // Point form to the update script
 
         // Populate form fields with data from the card's data-* attributes
         editTaskIDInput.value = card.dataset.taskId;
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set modal appearance for "Add" mode
         modalTitle.textContent = 'Add New Task';
         submitButton.textContent = 'Create Task';
-        taskForm.action = 'user-task-handler.php'; // Point form to the add script
+        taskForm.action = 'handlers/user-task-handler.php'; // Point form to the add script
         
         // Reset the form and clear the hidden ID
         taskForm.reset();

@@ -1,10 +1,7 @@
 <?php
     include('auth.php');
-
     require_admin();
-
     include('sqlconnect.php');
-
 
     $accountID = $_SESSION['AccountID'];
     $userData = [];
@@ -19,7 +16,6 @@
     }
     $stmt->close();
     
-    // Initialize JS variables to prevent errors
     $chartDataJSON = '[]';
     $taskStatusDataJSON = '[]';
 ?>
@@ -40,10 +36,10 @@
     <link rel="icon" type="image/png" href="images/PharmaScanLogo.png">
     
     <script defer src="scripts/global.js?v=<?php echo time(); ?>"></script>
+    <!-- Updated JS file -->
     <script defer src="scripts/admin-account-settings.js?v=<?php echo time(); ?>"></script>
 
     <script>
-        // These variables are now safely initialized at the top of the PHP script
         const employeeDistributionData = <?php echo $chartDataJSON; ?>;
         const taskStatusData = <?php echo $taskStatusDataJSON; ?>;
     </script>
@@ -54,12 +50,14 @@
         <?php include('toast-message.php'); ?>
         <?php include('admin-sidebar.php'); ?>
         
+        <!-- Text Confirmation Modal -->
         <div id="confirmationModal" class="modal-overlay">
             <div class="modal-box">
                 <h3>Confirm Changes</h3>
                 <p>Are you sure you want to save these changes?</p>
                 <div class="modal-buttons">
                     <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <!-- Trigger confirmSubmit() which leads to NFC -->
                     <button class="btn-confirm" onclick="confirmSubmit()">Confirm</button>
                 </div>
             </div>
@@ -100,7 +98,10 @@
                                     <div class="form-group">
                                         <label for="newPassword">New Password</label>
                                         <div class="password-wrapper">
-                                            <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password">
+                                            <input type="password" id="newPassword" name="newPassword" 
+                                                placeholder="Enter new password"
+                                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}" 
+                                                title="Must contain at least one number, one uppercase and lowercase letter, one special character, and at least 8 or more characters">
                                             <button type="button" class="toggle-password">
                                                 <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                                 <svg class="icon-eye-slash" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
@@ -111,7 +112,6 @@
                                     <div class="form-group">
                                         <label for="nfcPassword">NFC Password</label>
                                         <div class="password-wrapper">
-                                            <!-- Changed type to password for security, added toggle -->
                                             <input type="password" id="nfcPassword" name="nfcPassword" value="<?php echo htmlspecialchars($userData['ICPassword'] ?? ''); ?>" maxlength="4">
                                             <button type="button" class="toggle-password">
                                                 <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -119,10 +119,9 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <!-- Add this inside the form -->
+
                                     <input type="hidden" name="action" value="save_account">
 
-                                    <!-- Update the button -->
                                     <div class="form-actions">
                                         <button type="button" class="btn-save" onclick="openModal('accountForm')">Save Changes</button>
                                     </div>
@@ -144,6 +143,7 @@
             </div>
         </main>
     </div>
+    
     <!-- NFC Authentication Modal -->
     <div id="nfcAuthModal" class="nfc-modal">
         <div class="nfc-modal-content">

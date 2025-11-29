@@ -113,4 +113,29 @@ document.addEventListener('DOMContentLoaded', function() {
             firstCharTimestamp = null;
         }
     });
+    
+    // --- Password Toggle Logic ---
+    const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+    togglePasswordButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            // Get the input field (sibling of the button)
+            const passwordInput = this.previousElementSibling;
+
+            // Get the icons
+            const eyeIcon = this.querySelector('.icon-eye');
+            const eyeSlashIcon = this.querySelector('.icon-eye-slash');
+
+            // Toggle type
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.style.display = 'none';
+                eyeSlashIcon.style.display = 'block';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.style.display = 'block';
+                eyeSlashIcon.style.display = 'none';
+            }
+        });
+    });
 });

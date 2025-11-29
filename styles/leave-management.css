@@ -554,22 +554,22 @@
     background-color: #E9D8D4;
     border-color: var(--clr-highred);
     color: var(--clr-highred);
-    cursor: not-allowed;
+    cursor: pointer; /* Changed from not-allowed */
 }
 .calendar-day.unavailable_leave:hover {
-     background-color: #E9D8D4;
+     background-color: #d6c5c1; /* Optional: Slight hover effect */
 }
 
-.calendar-day.occupied {
+.modal-content-left .calendar-day.occupied {
     color: var(--clr-mediumyellow);
     background-color: #E7E1CF;
     border-color: var(--clr-mediumyellow);
-    cursor: not-allowed;
+    cursor: pointer; /* Changed to pointer */
 }
-.calendar-day.occupied:hover {
-    background-color: #E7E1CF;
+/* Optional: Add hover effect to show it is interactive */
+.modal-content-left .calendar-day.occupied:hover {
+    background-color: #dcd4be; 
 }
-
 .calendar-day.pending_application::after {
     content: '';
     position: absolute;

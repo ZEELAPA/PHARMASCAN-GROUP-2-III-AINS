@@ -71,6 +71,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalProfileImage = document.getElementById('modalProfileImage');
     const defaultImage = 'images/default-user.png';
 
+
+    function updateStatusFieldState() {
+        if (roleSelect.value === 'Administrator') {
+            employmentStatusSelect.value = 'Active';
+            employmentStatusSelect.disabled = true;
+            // Visual cue: make it look disabled/greyed out
+            employmentStatusSelect.style.backgroundColor = "#e9ecef";
+        } else {
+            employmentStatusSelect.disabled = false;
+            employmentStatusSelect.style.backgroundColor = "";
+        }
+    }
+
+    // Add listener for when the Role changes manually
+    roleSelect.addEventListener('change', updateStatusFieldState);
     
     function setupModalForAdd() {
         modalTitle.textContent = 'Add New Employee';
@@ -79,6 +94,8 @@ document.addEventListener('DOMContentLoaded', function() {
         createButton.style.display = 'inline-block';
         modal.classList.add('is-open');
         roleSelect.value = 'User';
+
+        updateStatusFieldState();
 
         isNfcCodeValid = false;
         nfcStatusEl.textContent = 'Waiting';
@@ -102,6 +119,32 @@ document.addEventListener('DOMContentLoaded', function() {
         setupModalForAdd();
     });
 
+    // --- INPUT RESTRICTION LOGIC ---
+    if (contactNumberInput) {
+        contactNumberInput.addEventListener('input', function(e) {
+            // Remove any non-numeric characters
+            let value = this.value.replace(/[^0-9]/g, '');
+            
+            // If they type '09', remove the 0
+            if (value.startsWith('0')) {
+                value = value.substring(1);
+            }
+            // If they paste '639', remove the 63
+            if (value.startsWith('63')) {
+                value = value.substring(2);
+            }
+
+            this.value = value;
+        });
+
+        // Prevent pasting non-numeric content
+        contactNumberInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+            const numericData = pastedData.replace(/[^0-9]/g, '');
+            document.execCommand('insertText', false, numericData);
+        });
+    }
 
     profileItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -125,12 +168,21 @@ document.addEventListener('DOMContentLoaded', function() {
             vacationLeaveInput.value = accountData.vacationleave;
             sickLeaveInput.value = accountData.sickleave;
             roleSelect.value = accountData.role; 
+            employmentStatusSelect.value = accountData.empstatus;
             nfcCodeInput.value = accountData.iccode;
             nfcPasswordInput.value = accountData.icpassword; 
+            let rawContact = accountData.contactnumber || '';
 
-            contactNumberInput.value = accountData.contactnumber;
+            if (rawContact.startsWith('63')) rawContact = rawContact.substring(2);
+            if (rawContact.startsWith('+63')) rawContact = rawContact.substring(3);
+            if (rawContact.startsWith('0')) rawContact = rawContact.substring(1);
+            
+            contactNumberInput.value = rawContact; 
+            
             emailInput.value = accountData.email;
             departmentSelect.value = accountData.departmentid;
+
+            updateStatusFieldState(); // <--- Add this line
 
             isNfcCodeValid = true; 
             nfcStatusEl.textContent = 'Waiting';

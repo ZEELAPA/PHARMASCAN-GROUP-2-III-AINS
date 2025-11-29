@@ -1,0 +1,646 @@
+## File Structure
+```
+PHARMASCAN/
+├── scripts
+│   └── user-account-settings.js
+├── styles
+│   └── user-account-settings.css
+└── user-account-settings.php
+```
+
+### `user-account-settings.php`
+
+```php
+<?php
+    include('auth.php');
+
+    require_user();
+
+    include('sqlconnect.php');
+
+
+    $accountID = $_SESSION['AccountID'];
+    $userData = [];
+
+    // Fetch current user data for account settings
+    $stmt = $conn->prepare("SELECT Username, ICPassword FROM tblaccounts WHERE AccountID = ?");
+    $stmt->bind_param("i", $accountID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $userData = $result->fetch_assoc();
+    }
+    $stmt->close();
+    
+    // Initialize JS variables to prevent errors
+    $chartDataJSON = '[]';
+    $taskStatusDataJSON = '[]';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/user-account-settings.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="styles/global.css?v=<?php echo time(); ?>">
+    <title>User Account Settings | PharmaScan</title>
+
+    <link rel="icon" type="image/png" href="images/PharmaScanLogo.png">
+    
+    <script defer src="scripts/global.js?v=<?php echo time(); ?>"></script>
+    <script defer src="scripts/user-account-settings.js?v=<?php echo time(); ?>"></script>
+
+    <script>
+        // These variables are now safely initialized at the top of the PHP script
+        const employeeDistributionData = <?php echo $chartDataJSON; ?>;
+        const taskStatusData = <?php echo $taskStatusDataJSON; ?>;
+    </script>
+</head>
+<body>
+    <div class="app-container">
+
+        <?php include('toast-message.php'); ?>
+        <?php include('user-sidebar.php'); ?>
+        
+        <div id="confirmationModal" class="modal-overlay">
+            <div class="modal-box">
+                <h3>Confirm Changes</h3>
+                <p>Are you sure you want to save these changes?</p>
+                <div class="modal-buttons">
+                    <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button class="btn-confirm" onclick="confirmSubmit()">Confirm</button>
+                </div>
+            </div>
+        </div>
+
+        <main class="main-container">
+            <div class="main-panel">
+                <div class="main-title">
+                    <h3>Account Settings</h3>
+                    <p>Customize and Edit your personal and account info!</p>
+                </div>
+                <div class="panels-container">
+                    <div class="profile-settings-panel">
+                        <div class="profile-settings-header">
+                            <h1>Account Security</h1>
+                        </div>
+                        <hr>
+                        <form class="accountForm" id="accountForm" action="handlers/user-settings-handler.php" method="POST">
+                            <div class="form-container">
+                                <div id="profileContent" class="tab-content">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="username">Username</label>
+                                            <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($userData['Username'] ?? ''); ?>" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="oldPassword">Old Password</label>
+                                        <div class="password-wrapper">
+                                            <input type="password" id="oldPassword" name="oldPassword" placeholder="Enter current password to change">
+                                            <button type="button" class="toggle-password">
+                                                                                                                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="newPassword">New Password</label>
+                                        <div class="password-wrapper">
+                                            <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password">
+                                            <button type="button" class="toggle-password">
+                                                                                                                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nfcPassword">NFC Password</label>
+                                        <div class="password-wrapper">
+                                            <!-- Changed type to password for security, added toggle -->
+                                            <input type="password" id="nfcPassword" name="nfcPassword" value="<?php echo htmlspecialchars($userData['ICPassword'] ?? ''); ?>" maxlength="4">
+                                            <button type="button" class="toggle-password">
+                                                                                                                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Add this inside the form -->
+                                    <input type="hidden" name="action" value="save_account">
+
+                                    <!-- Update the button -->
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-save" onclick="openModal('accountForm')">Save Changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="options-panel">
+                        <div class="options-header">
+                            <h3>My Profile</h3>
+                        </div>
+                        <div class="options-container">
+                            <a href="user-profile-settings.php" class="options">Profile Information</a>
+                            <a href="user-account-settings.php" class="options active">Account Settings</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- NFC Authentication Modal -->
+    <div id="nfcAuthModal" class="nfc-modal">
+        <div class="nfc-modal-content">
+            <h3>Authentication Required</h3>
+            <p>Please scan your card to proceed.</p>
+            
+            <div class="form-group">
+                <div class="nfc-input-wrapper">
+                    <input type="password" id="nfcAuthCode" placeholder="Scan card..." readonly>
+                    <span id="nfcAuthStatus" class="nfc-status status-waiting">Waiting</span>
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 15px;">
+                <input type="password" id="nfcAuthPassword" placeholder="Enter 4-digit PIN" maxlength="4" autocomplete="off" disabled>
+                <div id="nfcAuthError" style="color: red; font-size: 12px; height: 15px;"></div>
+            </div>
+
+            <div class="nfc-modal-buttons">
+                <button type="button" class="btn-cancel" id="cancelNfcBtn">Cancel</button>
+                <button type="button" class="btn-confirm" id="confirmNfcBtn" disabled>Verify</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+```
+
+### `styles\user-account-settings.css`
+
+```css
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.main-panel {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.main-title {
+    margin: 1.25rem 0;
+}
+
+.main-title h3{
+    font-size: 1.75rem;
+}
+
+.main-title p, .main-title h3{
+    font-family: var(--ff-Raleway);
+    color: var(--clr-blue);
+}
+
+.panels-container{
+    display: flex;
+    flex-direction: row;
+    gap: 1.25rem;
+    height: 100%;
+}
+
+.profile-settings-panel, .options-panel{
+    background-color: var(--clr-bgwhite);
+    
+    border-radius: 10px;
+    box-shadow: 18px 18px 7px 0 rgba(0, 0, 0, 0.00), 12px 12px 7px 0 rgba(0, 0, 0, 0.01), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 1px 1px 2px 0 rgba(0, 0, 0, 0.10);
+}
+
+.profile-settings-panel{
+    display: flex;
+    flex-direction: column;
+    color: var(--clr-blue);
+    flex: 1;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 1.5rem 3rem;
+}
+
+.profile-settings-header{
+    display: flex;
+    justify-content: left;
+    width: 100%;
+    margin-bottom: 0.25rem;
+}
+
+.profile-settings-panel h1{
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.profile-settings-panel hr{
+    width: 100%;
+    border: 1.5px solid var(--clr-blue);
+    margin-bottom: 1.625rem;
+}
+
+
+/* FORM PANEL STYLES */
+
+.tab-content {
+    padding-top: 0;
+}
+
+.accountForm{
+    width: 100%;
+}
+
+
+/* Form Group Styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input{
+    width: 100%;
+    padding: 0.25rem 0;
+    background-color: var(--clr-bgwhite);
+    border: none;
+    border: 1px solid var(--clr-blue);
+    color: var(--clr-blue);
+    font-size: 1.1rem;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+.form-group input:focus{
+    outline: none;
+}
+
+.form-group input[readonly] {
+    color: #95a5a6;
+    cursor: not-allowed;
+}
+
+/* Style for an input field that has an error */
+.form-group input.is-invalid {
+    border-bottom: 1px solid #c0392b;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* --- PASSWORD TOGGLE STYLES --- */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    /* Add padding to the right so text doesn't overlap the icon */
+    padding-right: 40px; 
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    
+    color: var(--clr-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password:focus {
+    outline: none;
+}
+
+.toggle-password svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Form Actions (Buttons) */
+.form-actions {
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.btn-save{
+    padding: 0.5rem 1.5rem;
+    border: 1px solid var(--clr-blue);
+    color: var(--clr-blue);
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-save:hover {
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+}
+
+
+/* OPTIONS START */
+
+.options-panel {
+    flex: 1;
+    display: flex;
+    height: fit-content;
+    flex-direction: column;
+    padding: 2rem; 
+    color: var(--clr-blue);
+    gap: 0.75rem;
+}
+
+.options-header{
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.options-container{
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.options-container a{
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: var(--clr-blue);
+}
+
+.options-container .active{
+    font-weight: 700;
+}
+
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.modal-box {
+    background: var(--clr-bgwhite);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    color: var(--clr-blue);
+}
+.modal-box h3 { margin-bottom: 10px;}
+.modal-box p { margin-bottom: 25px;}
+.modal-buttons { display: flex; gap: 15px; justify-content: center; }
+.btn-confirm, .btn-cancel {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.btn-confirm { background: var(--clr-blue); color: var(--clr-white); }
+.btn-cancel { background: var(--clr-white); color: var(--clr-blue); border: 1px solid var(--clr-blue);}
+```
+
+### `scripts\user-account-settings.js`
+
+```javascript
+document.addEventListener('DOMContentLoaded', function() {
+    // --- Variables ---
+    let currentFormId = null; // Stores 'accountForm' when button is clicked
+
+    // Confirmation Modal Elements (From your PHP)
+    const confirmModal = document.getElementById('confirmationModal');
+    
+    // NFC Modal Elements (From the HTML added in the previous step)
+    const nfcModal = document.getElementById('nfcAuthModal');
+    const nfcInput = document.getElementById('nfcAuthCode');
+    const nfcPassword = document.getElementById('nfcAuthPassword');
+    const nfcStatus = document.getElementById('nfcAuthStatus');
+    const nfcError = document.getElementById('nfcAuthError');
+    const confirmNfcBtn = document.getElementById('confirmNfcBtn');
+    const cancelNfcBtn = document.getElementById('cancelNfcBtn');
+
+    // Scanner Logic Variables
+    let nfcBuffer = '';
+    let lastKeyTime = Date.now();
+    let isListening = false;
+
+    // --- 1. Functions called by HTML onclick attributes ---
+    
+    // Called by: <button onclick="openModal('accountForm')">
+    window.openModal = function(formId) {
+        currentFormId = formId;
+        confirmModal.style.display = 'flex'; // Show the text confirmation first
+        confirmModal.classList.add('is-open'); // Add class for animation if needed
+    };
+
+    // Called by: <button onclick="closeModal()">
+    window.closeModal = function() {
+        confirmModal.style.display = 'none';
+        confirmModal.classList.remove('is-open');
+    };
+
+    // Called by: <button onclick="confirmSubmit()">
+    window.confirmSubmit = function() {
+        // 1. Close the text confirmation modal
+        window.closeModal();
+        // 2. Open the NFC authentication modal
+        openNfcModal();
+    };
+
+    // --- 2. NFC Modal Logic ---
+
+    function openNfcModal() {
+        nfcModal.classList.add('is-open');
+        nfcModal.style.display = 'flex'; // Ensure flex is applied
+        
+        // Reset fields
+        nfcInput.value = '';
+        nfcPassword.value = '';
+        nfcPassword.disabled = true;
+        confirmNfcBtn.disabled = true;
+        nfcStatus.textContent = 'Waiting';
+        nfcStatus.className = 'nfc-status status-waiting';
+        nfcError.textContent = '';
+        
+        // Focus the scanner input
+        setTimeout(() => nfcInput.focus(), 100);
+    }
+
+    cancelNfcBtn.addEventListener('click', () => {
+        nfcModal.classList.remove('is-open');
+        nfcModal.style.display = 'none';
+        isListening = false;
+    });
+
+    // --- 3. Scanner Detection Logic ---
+
+    nfcInput.addEventListener('focus', () => { 
+        isListening = true; 
+        nfcStatus.textContent = 'Listening...';
+        nfcStatus.className = 'nfc-status status-listening';
+    });
+    
+    nfcInput.addEventListener('blur', () => { 
+        isListening = false; 
+    });
+
+    // Listen for rapid keystrokes (Scanner Emulation)
+    document.addEventListener('keydown', (e) => {
+        // Only capture keys if the NFC modal is open and input is focused
+        if (!isListening) return;
+
+        const currentTime = Date.now();
+        // If keys are too slow (manual typing), reset buffer
+        if (currentTime - lastKeyTime > 200) {
+            nfcBuffer = ''; 
+        }
+        lastKeyTime = currentTime;
+
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Stop form submission
+            
+            // Check if buffer contains enough characters to be a card ID
+            if (nfcBuffer.length > 3) {
+                nfcInput.value = nfcBuffer; // Show masked value
+                nfcStatus.textContent = 'Card Scanned';
+                nfcStatus.className = 'nfc-status status-success';
+                
+                // Enable Password Field
+                nfcPassword.disabled = false;
+                nfcPassword.focus();
+            } else {
+                nfcStatus.textContent = 'Scan Failed';
+                nfcStatus.className = 'nfc-status status-error';
+                nfcInput.value = '';
+            }
+            nfcBuffer = ''; // Clear buffer
+        } else if (e.key.length === 1) {
+            // Append character to buffer
+            nfcBuffer += e.key;
+        }
+    });
+
+    // --- 4. Password Validation & Verification ---
+
+    nfcPassword.addEventListener('input', () => {
+        // Enable button only if 4 digits are entered
+        if (/^\d{4}$/.test(nfcPassword.value)) {
+            confirmNfcBtn.disabled = false;
+            nfcError.textContent = '';
+        } else {
+            confirmNfcBtn.disabled = true;
+        }
+    });
+
+    confirmNfcBtn.addEventListener('click', () => {
+        const code = nfcInput.value;
+        const pass = nfcPassword.value;
+
+        nfcStatus.textContent = 'Verifying...';
+        confirmNfcBtn.disabled = true;
+
+        // AJAX Request to Verify User
+        fetch('handlers/verify-current-user.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `nfcCode=${encodeURIComponent(code)}&nfcPassword=${encodeURIComponent(pass)}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Success!
+                nfcStatus.textContent = 'Verified!';
+                nfcStatus.className = 'nfc-status status-success';
+                
+                // Submit the actual form
+                setTimeout(() => {
+                    const formToSubmit = document.getElementById(currentFormId);
+                    if (formToSubmit) {
+                        formToSubmit.submit();
+                    } else {
+                        console.error('Form not found: ' + currentFormId);
+                    }
+                }, 500);
+            } else {
+                // Failure
+                nfcStatus.textContent = 'Invalid Credentials';
+                nfcStatus.className = 'nfc-status status-error';
+                nfcError.textContent = data.message || 'Authentication failed.';
+                confirmNfcBtn.disabled = false;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            nfcStatus.textContent = 'Server Error';
+            nfcStatus.className = 'nfc-status status-error';
+            confirmNfcBtn.disabled = false;
+        });
+    });
+
+    // --- Password Toggle Logic ---
+    const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+    togglePasswordButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            // Get the input field (sibling of the button)
+            const passwordInput = this.previousElementSibling;
+
+            // Get the icons
+            const eyeIcon = this.querySelector('.icon-eye');
+            const eyeSlashIcon = this.querySelector('.icon-eye-slash');
+
+            // Toggle type
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.style.display = 'none';
+                eyeSlashIcon.style.display = 'block';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.style.display = 'block';
+                eyeSlashIcon.style.display = 'none';
+            }
+        });
+    });
+});
+```
+

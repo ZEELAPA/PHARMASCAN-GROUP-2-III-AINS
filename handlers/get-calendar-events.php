@@ -4,19 +4,17 @@ include('../sqlconnect.php');
 $year = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
 $month = isset($_GET['month']) ? intval($_GET['month']) : date('m');
 
-// Final data structure we will send to the frontend
+// Final data structure
 $outputData = [];
 
-// --- STEP 1: LOAD BASE STATUSES (CORRECTED LOGIC) ---
+// --- STEP 1: LOAD BASE STATUSES (Weekends/Holidays) ---
 $jsonFilePath = '../calendar-events.json';
 if (file_exists($jsonFilePath)) {
     $allBaseEvents = json_decode(file_get_contents($jsonFilePath), true);
     if (is_array($allBaseEvents)) {
-        // This loop now correctly reads the object structure from the JSON file.
         foreach ($allBaseEvents as $dateString => $dayData) {
             $datePrefix = sprintf('%04d-%02d', $year, $month);
             if (strpos($dateString, $datePrefix) === 0) {
-                // We directly assign the object from the file to our output data.
                 $outputData[$dateString] = $dayData;
             }
         }
@@ -26,10 +24,13 @@ if (file_exists($jsonFilePath)) {
 // --- STEP 2: FETCH & PROCESS LEAVE APPLICATIONS ---
 $firstDayOfMonth = "$year-$month-01";
 $lastDayOfMonth = date('Y-m-t', strtotime($firstDayOfMonth));
+
+// Fetch leaves that OVERLAP with the current month
 $stmt = $conn->prepare(
     "SELECT ScheduledLeave, ScheduledReturn, LeaveStatus FROM tblleaveform 
      WHERE (LeaveStatus = 'Pending' OR LeaveStatus = 'Approved') 
-     AND ScheduledLeave <= ? AND (ScheduledReturn >= ? OR ScheduledReturn IS NULL)"
+     AND ScheduledLeave <= ? 
+     AND (ScheduledReturn >= ? OR ScheduledReturn IS NULL)"
 );
 $stmt->bind_param("ss", $lastDayOfMonth, $firstDayOfMonth);
 $stmt->execute();
@@ -38,33 +39,58 @@ $result = $stmt->get_result();
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $startDate = new DateTime($row['ScheduledLeave']);
-        $endDate = ($row['ScheduledReturn'] === null) ? (clone $startDate)->modify('+1 day') : new DateTime($row['ScheduledReturn']);
+        
+        // --- FIX: Add +1 day to End Date because DatePeriod is exclusive ---
+        if ($row['ScheduledReturn'] === null) {
+            $endDate = (clone $startDate)->modify('+1 day');
+        } else {
+            $endDate = new DateTime($row['ScheduledReturn']);
+            $endDate->modify('+1 day'); 
+        }
+
         $datePeriod = new DatePeriod($startDate, new DateInterval('P1D'), $endDate);
 
         foreach ($datePeriod as $date) {
             $dateString = $date->format('Y-m-d');
             
-            // This logic correctly handles days from the DB that are NOT in the JSON file.
-            // It assumes such a day must be fundamentally 'available' to have an application on it.
+            // Ensure date is in the current requested month
+            if (strpos($dateString, sprintf('%04d-%02d', $year, $month)) !== 0) {
+                continue;
+            }
+            
+            // Initialize day if empty
             if (!isset($outputData[$dateString])) {
                 $outputData[$dateString] = ["classes" => ["available_leave"], "pendingCount" => 0];
             }
 
-            // Process based on leave status
+            // --- COLOR LOGIC ---
+            
+            // 1. Approved Leave: Definitely Occupied
             if ($row['LeaveStatus'] === 'Approved') {
-                $outputData[$dateString]['classes'] = ['occupied']; // 'Occupied' is a final state and should be the ONLY class.
-                $outputData[$dateString]['pendingCount'] = 0; // An approved leave is no longer pending.
+                $outputData[$dateString]['classes'] = ['occupied']; 
+                $outputData[$dateString]['pendingCount'] = 0;
             } 
+            // 2. Pending Leave: Treat as Occupied to show color immediately
             elseif ($row['LeaveStatus'] === 'Pending') {
-                // A pending application should NOT override an 'occupied' or 'unavailable' status.
-                $isFinalState = in_array('occupied', $outputData[$dateString]['classes']) || in_array('unavailable_leave', $outputData[$dateString]['classes']);
+                
+                // Check if already blocked (e.g., Weekend or Approved Leave takes precedence)
+                $classes = $outputData[$dateString]['classes'];
+                $isFinalState = in_array('occupied', $classes) || in_array('unavailable_leave', $classes);
                 
                 if (!$isFinalState) {
-                    // Add pending class if it's not already there.
+                    // Remove 'available_leave' so it becomes occupied
+                    $outputData[$dateString]['classes'] = array_values(array_diff($classes, ['available_leave']));
+
+                    // Add 'occupied' so it turns beige/yellow
+                    if (!in_array('occupied', $outputData[$dateString]['classes'])) {
+                        $outputData[$dateString]['classes'][] = 'occupied';
+                    }
+
+                    // Optional: Keep 'pending_application' if you want the underline visual too
                     if (!in_array('pending_application', $outputData[$dateString]['classes'])) {
                         $outputData[$dateString]['classes'][] = 'pending_application';
                     }
-                    // Increment the pending application count for this day.
+                    
                     $outputData[$dateString]['pendingCount']++;
                 }
             }
@@ -77,3 +103,4 @@ $conn->close();
 
 header('Content-Type: application/json');
 echo json_encode($outputData);
+?>

@@ -2,7 +2,7 @@
 session_start();
 require_once '../sqlconnect.php';
 require_once '../auth.php'; // Contains add_toast()
-require_once '../mailer.php'; 
+require_once 'mailer.php'; 
 
 require_admin();
 
@@ -86,6 +86,7 @@ if (isset($_POST['action'], $_POST['leaveID'], $_POST['accountID'])) {
                     Leave Type: <strong>$leaveType</strong><br>
                     Start Date: <strong>$startDate</strong><br>
                     End Date: <strong>$endDate</strong></p>
+                    Remarks: $remarks</p>
                     <p>These dates have been added to the company calendar. Your remaining <strong>$leaveType</strong> balance is now <strong>$newBalance days</strong>.</p>
                     <p>We hope you enjoy your time off,<br>
                     <strong>PharmaPlus Team</strong></p>

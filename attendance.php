@@ -122,18 +122,19 @@
                     <p>A great day starts with a clear beginning. By clocking in, you're not just starting a timer; you're signaling your focus and commitment, and we're here to record that effort for you.</p>
                 </div>
 
-                <?php if (isset($_SESSION['message'])): ?>
-                    <div class="session-message <?php echo htmlspecialchars($_SESSION['message_type']); ?>">
-                        <?php 
-                            echo htmlspecialchars($_SESSION['message']); 
-                            unset($_SESSION['message']);
-                            unset($_SESSION['message_type']);
-                        ?>
-                    </div>
-                <?php endif; ?>
+                <div id="messageContainer">
+                    <?php if (isset($_SESSION['message'])): ?>
+                        <div class="session-message <?php echo htmlspecialchars($_SESSION['message_type']); ?>">
+                            <?php 
+                                echo htmlspecialchars($_SESSION['message']); 
+                                unset($_SESSION['message']);
+                                unset($_SESSION['message_type']);
+                            ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
                 
-                
-                <span 
+                <span
                     class="scan-status" 
                     id="scanPrompt"
                     data-status="<?php echo isset($_SESSION['message']) ? 'scanned' : 'waiting'; ?>">
@@ -152,22 +153,24 @@
                     <h3><?php echo strtoupper(date('F j, Y')); ?></h3>
                 </div>
 
-                <?php if (empty($attendance_events)): ?>
-                    <div class="attendance-card">
-                        <p>No attendance records for today yet.</p>
-                    </div>
-                <?php else: ?>
-                    <?php foreach ($attendance_events as $event): ?>
-                        <div class="attendance-card">
-                            <p class="attendanceName"><?php echo htmlspecialchars(strtoupper($event['FullName'])); ?></p>
-                            <?php
-                                $type_class = ($event['EventType'] === 'Time In') ? 'type-time-in' : 'type-time-out';
-                            ?>
-                            <span class="attendanceType <?php echo $type_class; ?>"><?php echo htmlspecialchars($event['EventType']); ?></span>
-                            <p class="attendanceTime"><?php echo date('h:i A', strtotime($event['EventTime'])); ?></p>
+                <div id="dynamic-list">
+                    <?php if (empty($attendance_events)): ?>
+                        <div class="attendance-card" id="no-records-card">
+                            <p>No attendance records for today yet.</p>
                         </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php else: ?>
+                        <?php foreach ($attendance_events as $event): ?>
+                            <div class="attendance-card">
+                                <p class="attendanceName"><?php echo htmlspecialchars(strtoupper($event['FullName'])); ?></p>
+                                <?php
+                                    $type_class = ($event['EventType'] === 'Time In') ? 'type-time-in' : 'type-time-out';
+                                ?>
+                                <span class="attendanceType <?php echo $type_class; ?>"><?php echo htmlspecialchars($event['EventType']); ?></span>
+                                <p class="attendanceTime"><?php echo date('h:i A', strtotime($event['EventTime'])); ?></p>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div> 
             </div>
 
         </main>

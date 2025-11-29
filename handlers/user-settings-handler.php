@@ -10,7 +10,6 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 if (!isset($_SESSION['AccountID'])) {
-    // User must be logged in to make changes
     add_toast("You must be logged in to perform this action.", "error");
     header("Location: ../login.php");
     exit();
@@ -40,8 +39,23 @@ function handle_save_profile($conn, $accountID) {
     $lastName = trim($_POST['lastName']);
     $gender = $_POST['gender'];
     $age = filter_input(INPUT_POST, 'age', FILTER_SANITIZE_NUMBER_INT);
-    $contactNumber = trim($_POST['contactNumber']);
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+
+    // --- Contact Number Logic ---
+    $rawContact = trim($_POST['contactNumber']);
+    
+    // Remove any spaces or non-numeric characters just in case
+    $rawContact = preg_replace('/[^0-9]/', '', $rawContact);
+
+    // Validation: Must start with 9 and be 10 digits long
+    if (!preg_match('/^9\d{9}$/', $rawContact)) {
+        add_toast("Contact number must follow the format 9xxxxxxxxx (e.g., 9123456789).", "error");
+        header("Location: ../user-profile-settings.php"); // Or admin-profile-settings.php depending on file
+        exit();
+    }
+
+    // Prepend 63 to make it International/Standard format (Total 12 digits: 63 9XX XXX XXXX)
+    $contactNumber = '63' . $rawContact; 
 
     // 2. Handle Image Upload
     $newProfilePic = null;
@@ -51,12 +65,12 @@ function handle_save_profile($conn, $accountID) {
 
     // 3. Validation
     if (empty($firstName) || empty($lastName) || empty($email)) {
-        add_toast("First Name, Last Name, and Email are required.", "warning");
+        add_toast("First Name, Last Name, and Email are required.", "error");
         header("Location: ../user-profile-settings.php");
         exit();
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        add_toast("Please enter a valid email address.", "warning");
+        add_toast("Please enter a valid email address.", "error");
         header("Location: ../user-profile-settings.php");
         exit();
     }
@@ -124,12 +138,12 @@ function handle_save_account($conn, $accountID) {
 
     // 2. Validation
     if (empty($username)) {
-        add_toast("Username cannot be empty.", "warning");
+        add_toast("Username cannot be empty.", "error");
         header("Location: ../user-account-settings.php");
         exit();
     }
     if (!empty($nfcPassword) && !preg_match('/^\d{4}$/', $nfcPassword)) {
-        add_toast("NFC Password must be exactly 4 digits.", "warning");
+        add_toast("NFC Password must be exactly 4 digits.", "error");
         header("Location: ../user-account-settings.php");
         exit();
     }
@@ -152,33 +166,33 @@ function handle_save_account($conn, $accountID) {
     if (!empty($newPassword)) {
 
         if (strlen($newPassword) < 8) {
-            add_toast("Password must be at least 8 characters long.", "warning");
+            add_toast("Password must be at least 8 characters long.", "error");
             header("Location: ../user-account-settings.php");
             exit();
         }
         if (!preg_match('/[A-Z]/', $newPassword)) {
-            add_toast("Password must contain at least one uppercase letter.", "warning");
+            add_toast("Password must contain at least one uppercase letter.", "error");
             header("Location: ../user-account-settings.php");
             exit();
         }
         if (!preg_match('/[a-z]/', $newPassword)) {
-            add_toast("Password must contain at least one lowercase letter.", "warning");
+            add_toast("Password must contain at least one lowercase letter.", "error");
             header("Location: ../user-account-settings.php");
             exit();
         }
         if (!preg_match('/[0-9]/', $newPassword)) {
-            add_toast("Password must contain at least one number.", "warning");
+            add_toast("Password must contain at least one number.", "error");
             header("Location: ../user-account-settings.php");
             exit();
         }
         if (!preg_match('/[^a-zA-Z0-9]/', $newPassword)) {
-            add_toast("Password must contain at least one special character.", "warning");
+            add_toast("Password must contain at least one special character.", "error");
             header("Location: ../user-account-settings.php");
             exit();
         }
         
         if (empty($oldPassword)) {
-            add_toast("Please enter your old password to set a new one.", "warning");
+            add_toast("Please enter your old password to set a new one.", "error");
             header("Location: ../user-account-settings.php");
             exit();
         }
@@ -221,7 +235,7 @@ function handle_save_account($conn, $accountID) {
     exit();
 }
 function upload_profile_picture($file) {
-    $targetDir = "images/";
+    $targetDir = "../images/";
     if ($file['error'] === UPLOAD_ERR_OK) {
         $fileName = $file['name'];
         $fileTmpPath = $file['tmp_name'];

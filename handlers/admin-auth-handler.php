@@ -1,5 +1,5 @@
 <?php
-    // handlers/admin-auth-handler.php
+    // admin-auth-handler.php
     session_start();
     include('../sqlconnect.php');
 

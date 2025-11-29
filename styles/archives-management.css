@@ -47,8 +47,7 @@
     box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.1), 3px 3px 4px 0 rgba(0, 0, 0, 0.09), 7px 7px 6px 0 rgba(0, 0, 0, 0.05), 12px 12px 7px 0 rgba(0, 0, 0, 0.01);
     
     width: 100%;
-    /* Flex-grow handles remaining vertical space, but 82% is kept if fixed height is desired */
-    height: 82%; 
+    height: 40rem;
     padding: 1.25rem 2rem;
     box-sizing: border-box;
     display: flex;
@@ -82,7 +81,7 @@
 #archiveTableSelect {
     padding: 0.25rem 0.5rem;
     width: 18rem;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     border: 1px solid var(--clr-blue);
     font-weight: 700;
     background-color: var(--clr-bgwhite);
@@ -137,8 +136,9 @@
 
 .archive-list-view-container {
     flex-grow: 1;
-    overflow-x: auto;
-    overflow-y: auto;
+    max-height: 33.5rem;
+    overflow-x: scroll;
+    overflow-y: scroll;
 }
 
 .archive-list-view-container table {
@@ -157,7 +157,6 @@
     color: var(--clr-blue);
     vertical-align: middle;
 }
-
 
 .archive-list-view-container th:first-child,
 .archive-list-view-container td:first-child {
@@ -200,13 +199,27 @@
 }
 
 /* Status Colors (Examples) */
+
+/* Agenda Status */
+
+.status-tag-list.not-started { background-color: var(--clr-highred); }
 .status-tag-list.pending { background-color: var(--clr-mediumyellow); }
-.status-tag-list.approved { background-color: var(--clr-lowgreen); }
 .status-tag-list.completed { background-color: var(--clr-lowgreen); }
+
+
+/* Leaves Status */
+
 .status-tag-list.rejected { background-color: var(--clr-highred); }
 .status-tag-list.cancelled { background-color: var(--clr-highred); }
+
+
+/* Account Status */
+
+.status-tag-list.archived { background-color: var(--clr-mediumyellow); } 
+.status-tag-list.approved { background-color: var(--clr-lowgreen); }
 .status-tag-list.creation { background-color: var(--clr-blue); } 
 .status-tag-list.update { background-color: #9c27b0; } 
+
 
 
 /* Expand button styling */
@@ -277,13 +290,19 @@
     opacity: 1;
 }
 
+.modal-content h3 {
+    margin: 0.75rem 0;
+    font-size: 1.25rem;
+    color: var(--clr-blue);
+}
+
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid var(--clr-blue);
     padding-bottom: 0.75rem;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.25rem;
 }
 
 .modal-header h2 {
@@ -352,4 +371,112 @@
 #applicationModal {
     /* Ensure these are hidden if they were accidentally left in the HTML */
     display: none; 
+}
+
+/* ==================================== */
+/*        Export Configuration Modal    */
+/* ==================================== */
+
+/* 1. Center the modal container instead of aligning to the right */
+#exportConfigModal {
+    justify-content: center; /* Override flex-end */
+    align-items: center;     /* Center vertically */
+}
+
+/* 2. Style the modal box (Card style instead of full height drawer) */
+#exportConfigModal .modal-content {
+    width: 100%;
+    max-width: 450px;       /* Compact width */
+    height: auto;           /* Fit content */
+    max-height: 90vh;
+    border-radius: 10px;    /* Rounded corners */
+    
+    /* Reset animations/transforms from the generic side-drawer style */
+    transform: scale(0.95); 
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#exportConfigModal.active .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* 3. Form Input Styling */
+#exportConfigModal .form-group input[type="date"],
+#exportConfigModal .form-group select {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    font-size: 1rem;
+    font-family: var(--ff-Raleway);
+    color: var(--clr-blue);
+    background-color: #f9f9f9;
+    
+    border: 1px solid #ccc; /* Full border unlike the read-only inputs */
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#exportConfigModal .form-group input[type="date"]:focus,
+#exportConfigModal .form-group select:focus {
+    border-color: var(--clr-blue);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(79, 129, 189, 0.1); /* Subtle glow */
+}
+
+/* 4. Labels and Helper text */
+#exportConfigModal small {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #666;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+/* 5. Date Range Layout (Two inputs side-by-side) */
+#exportConfigModal .form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+/* 6. Action Buttons */
+#exportConfigModal button[type="submit"] {
+    background-color: var(--clr-blue);
+    color: var(--clr-white);
+    border: none;
+    border-radius: 5px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#exportConfigModal button[type="submit"]:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+#exportConfigModal .close-export-btn[type="button"] {
+    background-color: #e0e0e0 !important; /* Light grey */
+    color: #333 !important;
+    border: none;
+    border-radius: 5px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#exportConfigModal .close-export-btn[type="button"]:hover {
+    background-color: #d0d0d0 !important;
+}
+
+/* Ensure the header text fits well */
+#exportConfigModal .modal-header h2 {
+    font-size: 1.5rem;
+    margin: 0;
 }

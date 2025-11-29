@@ -1,15 +1,11 @@
 <?php
     include('auth.php');
-
     require_user();
-
     include('sqlconnect.php');
-
 
     $accountID = $_SESSION['AccountID'];
     $userData = [];
 
-    // Fetch current user data for account settings
     $stmt = $conn->prepare("SELECT Username, ICPassword FROM tblaccounts WHERE AccountID = ?");
     $stmt->bind_param("i", $accountID);
     $stmt->execute();
@@ -19,7 +15,6 @@
     }
     $stmt->close();
     
-    // Initialize JS variables to prevent errors
     $chartDataJSON = '[]';
     $taskStatusDataJSON = '[]';
 ?>
@@ -43,7 +38,6 @@
     <script defer src="scripts/user-account-settings.js?v=<?php echo time(); ?>"></script>
 
     <script>
-        // These variables are now safely initialized at the top of the PHP script
         const employeeDistributionData = <?php echo $chartDataJSON; ?>;
         const taskStatusData = <?php echo $taskStatusDataJSON; ?>;
     </script>
@@ -100,7 +94,11 @@
                                     <div class="form-group">
                                         <label for="newPassword">New Password</label>
                                         <div class="password-wrapper">
-                                            <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password">
+                                            <!-- Added regex pattern matching the PHP handler requirements -->
+                                            <input type="password" id="newPassword" name="newPassword" 
+                                                   placeholder="Enter new password"
+                                                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}" 
+                                                   title="Must be at least 8 characters and contain: 1 uppercase, 1 lowercase, 1 number, and 1 special character.">
                                             <button type="button" class="toggle-password">
                                                 <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                                 <svg class="icon-eye-slash" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
@@ -111,7 +109,6 @@
                                     <div class="form-group">
                                         <label for="nfcPassword">NFC Password</label>
                                         <div class="password-wrapper">
-                                            <!-- Changed type to password for security, added toggle -->
                                             <input type="password" id="nfcPassword" name="nfcPassword" value="<?php echo htmlspecialchars($userData['ICPassword'] ?? ''); ?>" maxlength="4">
                                             <button type="button" class="toggle-password">
                                                 <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -119,10 +116,9 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <!-- Add this inside the form -->
+
                                     <input type="hidden" name="action" value="save_account">
 
-                                    <!-- Update the button -->
                                     <div class="form-actions">
                                         <button type="button" class="btn-save" onclick="openModal('accountForm')">Save Changes</button>
                                     </div>

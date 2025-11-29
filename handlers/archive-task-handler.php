@@ -1,77 +1,64 @@
 <?php
-// archive-task-handler.php
+    session_start(); // Important for session based toast
+    include('../auth.php');
+    require_admin(); 
+    include('../sqlconnect.php');
 
-include('../auth.php');
-require_admin(); // Ensure only authorized users can archive
-include('../sqlconnect.php');
+    $response = ['success' => false, 'message' => ''];
 
-// Initialize response array
-$response = ['success' => false, 'message' => ''];
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['taskID']) && isset($_POST['archivedBy'])) {
-    
-    $taskID = (int)$_POST['taskID'];
-    $archivedBy = (int)$_POST['archivedBy'];
-
-    // Use a transaction to ensure either both copy/delete succeed or neither happens
-    $conn->begin_transaction();
-
-    try {
-        // 1. INSERT task data into the archive table
-        $insertSql = "
-            INSERT INTO tblagendaarchive (
-                AgendaID, AccountID, Task, Date, Deadline, Priority, Status, Remarks, ArchivedBy
-            )
-            SELECT 
-                AgendaID, AccountID, Task, Date, Deadline, Priority, Status, Remarks, ?
-            FROM 
-                tblagenda 
-            WHERE 
-                AgendaID = ?
-        ";
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['taskID']) && isset($_POST['archivedBy'])) {
         
-        $stmtInsert = $conn->prepare($insertSql);
-        if (!$stmtInsert) {
-            throw new Exception("Error preparing insert statement: " . $conn->error);
-        }
-        $stmtInsert->bind_param("ii", $archivedBy, $taskID);
-        
-        if (!$stmtInsert->execute()) {
-            throw new Exception("Error executing insert: " . $stmtInsert->error);
-        }
-        $stmtInsert->close();
+        $taskID = (int)$_POST['taskID'];
+        $archivedBy = (int)$_POST['archivedBy'];
 
-        // 2. DELETE the task from the original table
-        $deleteSql = "DELETE FROM tblagenda WHERE AgendaID = ?";
-        
-        $stmtDelete = $conn->prepare($deleteSql);
-        if (!$stmtDelete) {
-            throw new Exception("Error preparing delete statement: " . $conn->error);
-        }
-        $stmtDelete->bind_param("i", $taskID);
+        $conn->begin_transaction();
 
-        if (!$stmtDelete->execute()) {
-            throw new Exception("Error executing delete: " . $stmtDelete->error);
-        }
-        $stmtDelete->close();
-        
-        // If both steps successful, commit the transaction
-        $conn->commit();
-        $response['success'] = true;
+        try {
+            // 1. INSERT
+            $insertSql = "
+                INSERT INTO tblagendaarchive (
+                    AgendaID, AccountID, Task, Date, Deadline, Priority, Status, Remarks, ArchivedBy
+                )
+                SELECT 
+                    AgendaID, AccountID, Task, Date, Deadline, Priority, Status, Remarks, ?
+                FROM 
+                    tblagenda 
+                WHERE 
+                    AgendaID = ?
+            ";
+            
+            $stmtInsert = $conn->prepare($insertSql);
+            $stmtInsert->bind_param("ii", $archivedBy, $taskID);
+            if (!$stmtInsert->execute()) throw new Exception($stmtInsert->error);
+            $stmtInsert->close();
 
-    } catch (Exception $e) {
-        // Rollback on any failure
-        $conn->rollback();
-        $response['message'] = "Database Transaction Failed. " . $e->getMessage();
+            // 2. DELETE
+            $deleteSql = "DELETE FROM tblagenda WHERE AgendaID = ?";
+            $stmtDelete = $conn->prepare($deleteSql);
+            $stmtDelete->bind_param("i", $taskID);
+            if (!$stmtDelete->execute()) throw new Exception($stmtDelete->error);
+            $stmtDelete->close();
+            
+            $conn->commit();
+            
+            // SET TOAST IN SESSION
+            add_toast("Task archived successfully.", "success");
+            $response['success'] = true;
+
+        } catch (Exception $e) {
+            $conn->rollback();
+            $response['message'] = $e->getMessage();
+            add_toast("Archiving failed: " . $e->getMessage(), "error");
+        }
+
+        $conn->close();
+
+    } else {
+        $response['message'] = 'Invalid request.';
+        add_toast("Invalid request parameters.", "error");
     }
 
-    $conn->close();
-
-} else {
-    $response['message'] = 'Invalid request or missing data.';
-}
-
-header('Content-Type: application/json');
-echo json_encode($response);
-exit();
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit();
 ?>

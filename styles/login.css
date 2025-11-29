@@ -202,7 +202,60 @@
     box-sizing: border-box;
 }
 
+/* --- Password Toggle Styles --- */
 
+/* Wrapper to hold input and button together */
+.password-wrapper {
+    position: relative;
+    width: 24rem; /* Matches your .login input width */
+    margin: 0.25rem 0; /* Matches your .login input margin */
+}
+
+/* Adjust input inside wrapper to fill space and make room for icon */
+.password-wrapper input {
+    width: 100%;
+    margin: 0; /* Wrapper handles the margin now */
+    padding-right: 2.5rem; /* Make space for the eye icon */
+    box-sizing: border-box; /* Ensures padding doesn't increase width */
+}
+
+.login button.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    
+    /* Overriding generic .login button styles */
+    width: auto;
+    height: auto;
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+    color: var(--clr-blue); /* Sets the icon color */
+    border-radius: 0;
+    
+    /* Layout for the icon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    cursor: pointer;
+}
+
+/* Remove the blue hover background inherited from main buttons */
+.login button.toggle-password:hover {
+    background-color: transparent;
+    opacity: 0.7; /* Simple visual feedback */
+}
+
+
+/* SVG Sizing */
+.toggle-password svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
 
 
 

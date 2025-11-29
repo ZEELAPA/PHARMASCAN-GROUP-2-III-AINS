@@ -28,7 +28,91 @@
             handle_add_employee($conn);
             break;
         case 'archive_employee':
-            add_toast("Archive feature is not yet implemented.", "info");
+            // 1. Get IDs
+            $targetEmployeeID = filter_input(INPUT_POST, 'employeeID', FILTER_SANITIZE_NUMBER_INT);
+            // Assuming the logged-in admin's ID is stored in session
+            $adminID = $_SESSION['AccountID'] ?? 0; 
+
+            if (!$targetEmployeeID) {
+                add_toast("Invalid Employee ID.", "error");
+                header("Location: ../user-management.php");
+                exit();
+            }
+
+            // 2. Prevent Self-Archiving
+            // We need to check if the target employee ID belongs to the currently logged-in admin
+            $stmt_check_self = $conn->prepare("SELECT AccountID FROM tblaccounts WHERE EmployeeID = ?");
+            $stmt_check_self->bind_param("i", $targetEmployeeID);
+            $stmt_check_self->execute();
+            $res_self = $stmt_check_self->get_result();
+            $target_acc_data = $res_self->fetch_assoc();
+            
+            if ($target_acc_data && $target_acc_data['AccountID'] == $adminID) {
+                add_toast("Action Denied: You cannot archive your own account.", "error");
+                header("Location: ../user-management.php");
+                exit();
+            }
+            $stmt_check_self->close();
+
+            $conn->begin_transaction();
+
+            try {
+                // 3. Fetch Full Details for the Snapshot
+                $query = "SELECT 
+                            a.AccountID, a.Role, 
+                            e.Position, e.DateEmployed,
+                            d.DepartmentName,
+                            p.FirstName, p.LastName
+                          FROM tblaccounts a
+                          JOIN tblemployees e ON a.EmployeeID = e.EmployeeID
+                          JOIN tblpersonalinfo p ON e.PersonalID = p.PersonalID
+                          JOIN tbldepartment d ON e.DepartmentID = d.DepartmentID
+                          WHERE a.EmployeeID = ?";
+                
+                $stmt_fetch = $conn->prepare($query);
+                $stmt_fetch->bind_param("i", $targetEmployeeID);
+                $stmt_fetch->execute();
+                $data = $stmt_fetch->get_result()->fetch_assoc();
+                $stmt_fetch->close();
+
+                if (!$data) throw new Exception("Employee data not found.");
+
+                $fullName = $data['FirstName'] . ' ' . $data['LastName'];
+                $originalAccountID = $data['AccountID'];
+                $role = $data['Role'];
+                $deptName = $data['DepartmentName'];
+                $position = $data['Position'];
+                $dateEmployed = $data['DateEmployed'];
+                $reason = "Employee Archived via User Management"; 
+
+                // 4. Create Snapshot in tblaccountarchive
+                $stmt_archive = $conn->prepare("INSERT INTO tblaccountarchive (OriginalAccountID, FullName, Role, DepartmentName, Position, DateEmployed, ArchivedBy, Reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt_archive->bind_param("isssssis", $originalAccountID, $fullName, $role, $deptName, $position, $dateEmployed, $adminID, $reason);
+                if (!$stmt_archive->execute()) throw new Exception("Failed to create archive snapshot.");
+                $stmt_archive->close();
+
+                // 5. Soft Delete: Update Employment Status
+                $stmt_soft_del = $conn->prepare("UPDATE tblemployees SET EmploymentStatus = 'Archived' WHERE EmployeeID = ?");
+                $stmt_soft_del->bind_param("i", $targetEmployeeID);
+                if (!$stmt_soft_del->execute()) throw new Exception("Failed to update employment status.");
+                $stmt_soft_del->close();
+
+                // 6. Security: Scramble Password & Deactivate Role
+                // We change role to 'User' (to strip admin rights) and set a dummy password
+                $dummyPass = password_hash(bin2hex(random_bytes(10)), PASSWORD_DEFAULT);
+                $stmt_block = $conn->prepare("UPDATE tblaccounts SET Password = ?, Role = 'User' WHERE EmployeeID = ?");
+                $stmt_block->bind_param("si", $dummyPass, $targetEmployeeID);
+                if (!$stmt_block->execute()) throw new Exception("Failed to block account access.");
+                $stmt_block->close();
+
+                $conn->commit();
+                add_toast("Employee archived successfully.", "success");
+
+            } catch (Exception $e) {
+                $conn->rollback();
+                add_toast("Error archiving employee: " . $e->getMessage(), "error");
+            }
+
             header("Location: ../user-management.php");
             exit();
 
@@ -49,8 +133,13 @@
         $lastName = trim($_POST['lastName']);
         $gender = trim($_POST['gender']);
         $age = filter_input(INPUT_POST, 'age', FILTER_SANITIZE_NUMBER_INT);
-        $contactNumber = trim($_POST['contactNumber']);
+        $rawContact = trim($_POST['contactNumber']);
+        $rawContact = preg_replace('/[^0-9]/', '', $rawContact);
         $role = $_POST['role'];
+
+        if ($role === 'Administrator') {
+            $employmentStatus = 'Active';
+        }
         
         // Account Data
         $username = trim($_POST['username']);
@@ -89,6 +178,14 @@
             header("Location: ../user-management.php");
             exit();
         }
+
+        if (!preg_match('/^9\d{9}$/', $rawContact)) {
+            add_toast("Contact number must follow the format 9xxxxxxxxx.", "error");
+            header("Location: ../user-management.php");
+            exit();
+        }
+        // Prepend 63
+        $contactNumber = '63' . $rawContact;
 
         if ($role !== 'Administrator') {
             // 1. Check if the user being edited is currently an Administrator
@@ -187,7 +284,8 @@
         $lastName = trim($_POST['lastName'] ?? '');
         $gender = $_POST['gender'] ?? '';
         $age = filter_input(INPUT_POST, 'age', FILTER_SANITIZE_NUMBER_INT);
-        $contactNumber = trim($_POST['contactNumber'] ?? '');
+        $rawContact = trim($_POST['contactNumber'] ?? '');
+        $rawContact = preg_replace('/[^0-9]/', '', $rawContact);
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
@@ -200,6 +298,11 @@
         $nfcCode = trim($_POST['nfcCode'] ?? '');
         $nfcPassword = $_POST['nfcPassword'] ?? '';
         $role = $_POST['role'] ?? 'User';
+
+        
+        if ($role === 'Administrator') {
+            $employmentStatus = 'Active';
+        }
 
         // 2. Handle Image Upload
         $uploadedProfilePic = null;
@@ -224,6 +327,11 @@
         if (!empty($age) && ($age < 18 || $age > 100)) {
             $errors[] = "Age must be a valid number between 18 and 100.";
         }
+
+        if (!preg_match('/^9\d{9}$/', $rawContact)) {
+            $errors[] = "Contact number must be 10 digits starting with 9 (e.g., 9123456789).";
+        }
+        $contactNumber = '63' . $rawContact;
 
         // Password Strength
         if (strlen($password) < 8) $errors[] = "Password must be at least 8 characters long.";
@@ -295,7 +403,7 @@
 
     function upload_profile_picture($file) {
     // Define target directory
-    $targetDir = "images/";
+    $targetDir = "../images/";
     
     // Check if file was uploaded without errors
     if ($file['error'] === UPLOAD_ERR_OK) {

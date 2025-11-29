@@ -27,6 +27,8 @@
             tblemployees AS emp ON acc.EmployeeID = emp.EmployeeID
         JOIN 
             tblpersonalinfo AS pi ON emp.PersonalID = pi.PersonalID
+        WHERE
+            emp.EmploymentStatus != 'Archived'
         ORDER BY 
             pi.FirstName, pi.LastName
     ";
@@ -152,7 +154,7 @@
 </head>
 <body>
     <div class="app-container">
-        
+        <?php include('toast-message.php'); ?>
         <?php include('admin-sidebar.php'); ?>    
 
         <main class="main-container">
@@ -499,7 +501,16 @@
             </div>
         </div>
     </div>
-    
+    <div id="confirmationModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Confirm Archival</h3>
+            <p>Are you sure you want to archive this task?</p>
+            <div class="modal-buttons">
+                <button id="btnCancelConfirm" class="btn-cancel">Cancel</button>
+                <button id="btnYesConfirm" class="btn-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
     <script>
         const CURRENT_USER_ACCOUNT_ID = <?php echo json_encode($_SESSION['AccountID'] ?? null); ?>;
     </script>

@@ -7,6 +7,32 @@
 
     $accountID = $_SESSION['AccountID'];
     $userData = [];
+    $displayContact = '';
+
+    // --- SECURITY CHECK ---
+    $isLocked = !isset($_SESSION['ProfileAccess']) || $_SESSION['ProfileAccess'] !== true;
+
+        if (!$isLocked) {
+        $stmt = $conn->prepare("
+            SELECT p.FirstName, p.LastName, p.Gender, p.Age, p.ContactNumber, p.ProfilePicture, a.Email
+            FROM tblaccounts a
+            JOIN tblemployees e ON a.EmployeeID = e.EmployeeID
+            JOIN tblpersonalinfo p ON e.PersonalID = p.PersonalID
+            WHERE a.AccountID = ?
+        ");
+        $stmt->bind_param("i", $accountID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $userData = $result->fetch_assoc();
+        }
+        $stmt->close();
+
+        $displayContact = $userData['ContactNumber'] ?? '';
+        if (strpos($displayContact, '63') === 0) $displayContact = substr($displayContact, 2);
+        if (strpos($displayContact, '+63') === 0) $displayContact = substr($displayContact, 3);
+        if (strpos($displayContact, '0') === 0) $displayContact = substr($displayContact, 1);
+    }
 
     // Fetch current user data
     $stmt = $conn->prepare("
@@ -23,6 +49,21 @@
         $userData = $result->fetch_assoc();
     }
     $stmt->close();
+
+    // --- Phone Number Formatting Logic ---
+    $displayContact = $userData['ContactNumber'] ?? '';
+    // If DB has "639...", remove "63"
+    if (strpos($displayContact, '63') === 0) {
+        $displayContact = substr($displayContact, 2);
+    }
+    // If DB has "+639...", remove "+63"
+    if (strpos($displayContact, '+63') === 0) {
+        $displayContact = substr($displayContact, 3);
+    }
+    // If DB has "09...", remove "0"
+    if (strpos($displayContact, '0') === 0) {
+        $displayContact = substr($displayContact, 1);
+    }
     
     // Initialize JS variables to prevent errors
     $chartDataJSON = '[]';
@@ -55,6 +96,24 @@
 </head>
 <body>
     <div class="app-container">
+
+        <?php if ($isLocked): ?>
+            <div id="securityLockModal" class="lock-modal">
+                <div class="lock-box">
+                    <h2>Security Check</h2>
+                    <p>Please enter your password to access Profile Settings.</p>
+                    
+                    <input type="password" id="securityPass" placeholder="Enter Password" autofocus autocomplete="current-password">
+                    <div id="securityError" class="lock-error">Incorrect Password</div>
+
+                    <div class="modal-buttons">
+                        <!-- Added IDs for JS targeting -->
+                        <button type="button" id="cancelLockBtn" class="btn-cancel">Cancel</button>
+                        <button type="button" id="unlockBtn" class="btn-confirm">Unlock</button>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
         
         <?php include('toast-message.php'); ?>
         <?php include('admin-sidebar.php'); ?>
@@ -122,7 +181,14 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="contactNumber">Contact Number</label>
-                                            <input type="text" id="contactNumber" name="contactNumber" value="<?php echo htmlspecialchars($userData['ContactNumber'] ?? ''); ?>">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">+63</span>
+                                                <input type="text" id="contactNumber" name="contactNumber" 
+                                                       value="<?php echo htmlspecialchars($displayContact); ?>" 
+                                                       placeholder="9123456789" 
+                                                       maxlength="10" 
+                                                       inputmode="numeric">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group">

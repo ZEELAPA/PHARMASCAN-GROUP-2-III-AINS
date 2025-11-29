@@ -110,9 +110,34 @@ a {
     width: 6%;
 }
 
-.sidebar.collapsed .nav-panel{
-  opacity: 0;
-  display: none;
+/* --- COLLAPSED SIDEBAR STYLES --- */
+
+/* 1. Keep the nav-panel visible, but center content */
+.sidebar.collapsed .nav-panel {
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar.collapsed .nav-panel ul {
+    width: 100%;
+}
+
+/* 2. Center the links inside the collapsed sidebar */
+.sidebar.collapsed .nav-panel a {
+    justify-content: center;
+    padding: 0.8rem 0; /* Increase vertical padding for clickable area */
+}
+
+/* 3. Hide the text (which we will wrap in a span in PHP) */
+.sidebar.collapsed .link-text {
+    transition: 0.3s ease-out;
+    opacity: 0;
+    display: none;
+}
+
+/* 4. Adjust the SVG to be centered with no margin */
+.sidebar.collapsed .nav-panel svg {
+    margin-right: 0;
 }
 
 .sidebar .logo-container{
@@ -298,7 +323,6 @@ a {
 
 .nfc-input-wrapper {
     position: relative;
-    margin-bottom: 15px;
 }
 
 .nfc-modal input {

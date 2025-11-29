@@ -69,6 +69,58 @@ function fetchLeaveArchiveData($conn) {
     return $records;
 }
 
+function fetchAccountArchiveData($conn) {
+    $sql = "
+        SELECT
+            aa.ArchivedAccountID AS RecordID,
+            aa.OriginalAccountID,
+            aa.FullName,
+            aa.Role,
+            aa.DepartmentName,
+            aa.Position,
+            aa.DateEmployed,
+            aa.DateArchived,
+            aa.Reason,
+            CONCAT(p_arch.FirstName, ' ', p_arch.LastName) AS ArchiverName
+        FROM
+            tblaccountarchive aa
+        LEFT JOIN
+            tblaccounts a_arch ON aa.ArchivedBy = a_arch.AccountID
+        LEFT JOIN
+            tblemployees e_arch ON a_arch.EmployeeID = e_arch.EmployeeID
+        LEFT JOIN
+            tblpersonalinfo p_arch ON e_arch.PersonalID = p_arch.PersonalID
+        ORDER BY aa.DateArchived DESC;
+    ";
+
+    $result = mysqli_query($conn, $sql);
+    $records = [];
+
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $record = [
+                'RecordID' => $row['RecordID'],
+                'TableName' => 'Account Archive',
+                'EmployeeName' => $row['FullName'], // The archived person
+                'ActionType' => 'Archived', 
+                'Date' => $row['DateArchived'],
+                'Details' => [
+                    'Original Account ID' => $row['OriginalAccountID'],
+                    'Full Name' => $row['FullName'],
+                    'Last Role' => $row['Role'],
+                    'Department' => $row['DepartmentName'],
+                    'Last Position' => $row['Position'],
+                    'Date Employed' => $row['DateEmployed'],
+                    'Archived By' => $row['ArchiverName'] ?? 'System',
+                    'Reason/Remarks' => $row['Reason']
+                ],
+            ];
+            $records[] = $record;
+        }
+    }
+    return $records;
+}
+
 function fetchAgendaArchiveData($conn) {
     $sql = "
         SELECT
@@ -117,7 +169,7 @@ function fetchAgendaArchiveData($conn) {
                     'Original Agenda ID' => $row['AgendaID'],
                     'Task' => $row['Task'],
                     'Assigned By' => $row['CreatorName'] ?? 'N/A',
-                    'Target Date' => date('F d, Y', strtotime($row['Date'])),
+                    'Date Created' => date('F d, Y', strtotime($row['Date'])),
                     'Deadline' => date('F d, Y h:i A', strtotime($row['Deadline'])),
                     'Priority' => $row['Priority'],
                     'Final Status' => $row['Status'],
@@ -149,6 +201,12 @@ if ($selectedTable === 'tblleaveformarchive') {
     $currentConfig = [
         'title' => 'Agenda/Task Archive',
         'headers' => ['Record ID', 'Archived By', 'Final Status', 'Archived Date'],
+    ];
+} elseif ($selectedTable === 'tblaccountarchive') {
+    $archiveRecords = fetchAccountArchiveData($conn);
+    $currentConfig = [
+        'title' => 'Employee Account Archive',
+        'headers' => ['Record ID', 'Employee Name', 'Status', 'Archived Date'],
     ];
 } else {
     $archiveRecords = [];
@@ -196,21 +254,22 @@ mysqli_close($conn);
                                 <select id="archiveTableSelect" onchange="window.location.href='archives-management.php?table=' + this.value">
                                     <option value="tblleaveformarchive" <?= $selectedTable === 'tblleaveformarchive' ? 'selected' : '' ?>>Leave Archives</option>
                                     <option value="tblagendaarchive" <?= $selectedTable === 'tblagendaarchive' ? 'selected' : '' ?>>Agenda Archives</option>
+                                    <option value="tblaccountarchive" <?= $selectedTable === 'tblaccountarchive' ? 'selected' : '' ?>>Account Archives</option>
                                 </select>
                             </div>
                             
                             <div class="export-button-container">
-                                <button>
+                                <!-- Change button to open modal -->
+                                <button id="openExportModalBtn">
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14.725 7.30125C14.5492 7.47681 14.3109 7.57543 14.0625 7.57543C13.8141 7.57543 13.5758 7.47681 13.4 7.30125L10.9375 4.83875V14.0625C10.9375 14.3111 10.8387 14.5496 10.6629 14.7254C10.4871 14.9012 10.2486 15 10 15C9.75136 15 9.5129 14.9012 9.33709 14.7254C9.16127 14.5496 9.0625 14.3111 9.0625 14.0625V4.83875L6.6 7.30125C6.42228 7.46685 6.18722 7.557 5.94435 7.55272C5.70147 7.54843 5.46974 7.45004 5.29797 7.27828C5.12621 7.10651 5.02782 6.87478 5.02353 6.6319C5.01925 6.38903 5.1094 6.15397 5.275 5.97625L9.3375 1.91375L10 1.25L10.6625 1.9125L14.725 5.975C14.8121 6.06206 14.8812 6.16544 14.9284 6.27922C14.9755 6.393 14.9998 6.51496 14.9998 6.63813C14.9998 6.76129 14.9755 6.88325 14.9284 6.99703C14.8812 7.11081 14.8121 7.21419 14.725 7.30125ZM3.125 12.1875C3.125 11.9389 3.02623 11.7004 2.85041 11.5246C2.6746 11.3488 2.43614 11.25 2.1875 11.25C1.93886 11.25 1.7004 11.3488 1.52459 11.5246C1.34877 11.7004 1.25 11.9389 1.25 12.1875V16.25C1.25 16.913 1.51339 17.5489 1.98223 18.0178C2.45107 18.4866 3.08696 18.75 3.75 18.75H16.25C16.913 18.75 17.5489 18.4866 18.0178 18.0178C18.4866 17.5489 18.75 16.913 18.75 16.25V12.1875C18.75 11.9389 18.6512 11.7004 18.4754 11.5246C18.2996 11.3488 18.0611 11.25 17.8125 11.25C17.5639 11.25 17.3254 11.3488 17.1496 11.5246C16.9738 11.7004 16.875 11.9389 16.875 12.1875V16.25C16.875 16.4158 16.8092 16.5747 16.6919 16.6919C16.5747 16.8092 16.4158 16.875 16.25 16.875H3.75C3.58424 16.875 3.42527 16.8092 3.30806 16.6919C3.19085 16.5747 3.125 16.4158 3.125 16.25V12.1875Z" fill="#EEEEEE"/>
+                                        <path d="M4 2C2.89543 2 2 2.89543 2 4V16C2 17.1046 2.89543 18 4 18H16C17.1046 18 18 17.1046 18 16V8L12 2H4Z" fill="#EEEEEE"/>
                                     </svg>
-                                    Export
+                                    Export Options
                                 </button>
                             </div>
                         </div>
                         <hr>
                         <div class="archive-list-body"> 
-
                             <div class="archive-list-view-container">
                                 <table>
                                     <thead>
@@ -261,7 +320,6 @@ mysqli_close($conn);
             </div>
         </main>
     </div>
-    
     <!-- ARCHIVE DETAIL MODAL -->
     <div id="archiveModal" class="modal">
         <div class="modal-content">
@@ -298,16 +356,68 @@ mysqli_close($conn);
                     <input type="text" id="detailActionType" readonly>
                 </div>
                 
-                <hr style="margin: 1.5rem 0; border-top: 1px solid #ddd;">
+                <hr style="margin: 1rem 0 1.25rem; border-top: 1px solid #ddd;">
                 
                 <h3>Specific Archive Details</h3>
-                <!-- Dynamic details will be injected here via JavaScript -->
                 <div id="dynamicDetailsContainer">
                     <p>Click "Expand" on a row to view specific details.</p>
                 </div>
 
             </div>
 
+        </div>
+    </div>
+    <!-- EXPORT CONFIGURATION MODAL -->
+    <div id="exportConfigModal" class="modal">
+        <div class="modal-content" style="height: auto; max-height: 100vh;">
+            <div class="modal-header">
+                <h2>Export Options</h2>
+                <span class="close-export-btn close-btn">&times;</span>
+            </div>
+            
+            <!-- Pointing to the PDF handler -->
+            <form action="handlers/export-archives-pdf.php" method="GET" target="_blank">
+                <!-- Hidden input to store the current table -->
+                <input type="hidden" name="table" value="<?= htmlspecialchars($selectedTable) ?>">
+
+                <div class="form-group">
+                    <label>Date Range</label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <small>From:</small>
+                            <input type="date" name="start_date" required 
+                                value="<?= date('Y-m-01') ?>"> <!-- Default to 1st of current month -->
+                        </div>
+                        <div class="form-group">
+                            <small>To:</small>
+                            <input type="date" name="end_date" required 
+                                value="<?= date('Y-m-d') ?>"> <!-- Default to today -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Sort By Date</label>
+                    <select name="sort_order">
+                        <option value="DESC">Newest First (Descending)</option>
+                        <option value="ASC">Oldest First (Ascending)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Format</label>
+                    <!-- Optional: Toggle between PDF and Excel handlers via JS if you want both -->
+                    <select id="exportFormatSelector">
+                        <option value="pdf">PDF Document</option>
+                        <option value="excel">Excel Spreadsheet</option>
+                    </select>
+                </div>
+
+                <div class="form-row" style="margin-top: 2rem;">
+                    <button type="button" class="close-export-btn" style="background: #ccc; border:none; padding: 10px 20px; cursor:pointer;">Cancel</button>
+                    <button type="submit" style="background: var(--clr-blue); color: white; border:none; padding: 10px 20px; cursor:pointer; flex: 1;">Generate Export</button>
+                </div>
+            </form>
         </div>
     </div>
 </body>

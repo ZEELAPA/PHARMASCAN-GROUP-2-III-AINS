@@ -2,10 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Variables ---
     let currentFormId = null; // Stores 'accountForm' when button is clicked
 
-    // Confirmation Modal Elements (From your PHP)
     const confirmModal = document.getElementById('confirmationModal');
     
-    // NFC Modal Elements (From the HTML added in the previous step)
+    // NFC Modal Elements
     const nfcModal = document.getElementById('nfcAuthModal');
     const nfcInput = document.getElementById('nfcAuthCode');
     const nfcPassword = document.getElementById('nfcAuthPassword');
@@ -24,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Called by: <button onclick="openModal('accountForm')">
     window.openModal = function(formId) {
         currentFormId = formId;
-        confirmModal.style.display = 'flex'; // Show the text confirmation first
-        confirmModal.classList.add('is-open'); // Add class for animation if needed
+        confirmModal.style.display = 'flex'; 
+        confirmModal.classList.add('is-open'); 
     };
 
     // Called by: <button onclick="closeModal()">
@@ -46,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function openNfcModal() {
         nfcModal.classList.add('is-open');
-        nfcModal.style.display = 'flex'; // Ensure flex is applied
+        nfcModal.style.display = 'flex'; 
         
         // Reset fields
         nfcInput.value = '';
@@ -61,28 +60,40 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => nfcInput.focus(), 100);
     }
 
-    cancelNfcBtn.addEventListener('click', () => {
+    // Helper to close modal logic
+    function closeNfcModal() {
         nfcModal.classList.remove('is-open');
         nfcModal.style.display = 'none';
         isListening = false;
-    });
+    }
+
+    if (cancelNfcBtn) {
+        cancelNfcBtn.addEventListener('click', closeNfcModal);
+    }
 
     // --- 3. Scanner Detection Logic ---
 
-    nfcInput.addEventListener('focus', () => { 
-        isListening = true; 
-        nfcStatus.textContent = 'Listening...';
-        nfcStatus.className = 'nfc-status status-listening';
-    });
-    
-    nfcInput.addEventListener('blur', () => { 
-        isListening = false; 
-    });
+    if (nfcInput) {
+        nfcInput.addEventListener('focus', () => { 
+            isListening = true; 
+            nfcStatus.textContent = 'Listening...';
+            nfcStatus.className = 'nfc-status status-listening';
+        });
+        
+        nfcInput.addEventListener('blur', () => { 
+            isListening = false; 
+        });
+    }
 
     // Listen for rapid keystrokes (Scanner Emulation)
     document.addEventListener('keydown', (e) => {
         // Only capture keys if the NFC modal is open and input is focused
         if (!isListening) return;
+
+        // Allow Tab for navigation
+        if (e.key === 'Tab') return;
+
+        e.preventDefault(); // Stop standard input behavior
 
         const currentTime = Date.now();
         // If keys are too slow (manual typing), reset buffer
@@ -92,8 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
         lastKeyTime = currentTime;
 
         if (e.key === 'Enter') {
-            e.preventDefault(); // Stop form submission
-            
             // Check if buffer contains enough characters to be a card ID
             if (nfcBuffer.length > 3) {
                 nfcInput.value = nfcBuffer; // Show masked value
@@ -117,60 +126,64 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- 4. Password Validation & Verification ---
 
-    nfcPassword.addEventListener('input', () => {
-        // Enable button only if 4 digits are entered
-        if (/^\d{4}$/.test(nfcPassword.value)) {
-            confirmNfcBtn.disabled = false;
-            nfcError.textContent = '';
-        } else {
-            confirmNfcBtn.disabled = true;
-        }
-    });
-
-    confirmNfcBtn.addEventListener('click', () => {
-        const code = nfcInput.value;
-        const pass = nfcPassword.value;
-
-        nfcStatus.textContent = 'Verifying...';
-        confirmNfcBtn.disabled = true;
-
-        // AJAX Request to Verify User
-        fetch('handlers/verify-current-user.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `nfcCode=${encodeURIComponent(code)}&nfcPassword=${encodeURIComponent(pass)}`
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                // Success!
-                nfcStatus.textContent = 'Verified!';
-                nfcStatus.className = 'nfc-status status-success';
-                
-                // Submit the actual form
-                setTimeout(() => {
-                    const formToSubmit = document.getElementById(currentFormId);
-                    if (formToSubmit) {
-                        formToSubmit.submit();
-                    } else {
-                        console.error('Form not found: ' + currentFormId);
-                    }
-                }, 500);
-            } else {
-                // Failure
-                nfcStatus.textContent = 'Invalid Credentials';
-                nfcStatus.className = 'nfc-status status-error';
-                nfcError.textContent = data.message || 'Authentication failed.';
+    if (nfcPassword) {
+        nfcPassword.addEventListener('input', () => {
+            // Enable button only if 4 digits are entered
+            if (/^\d{4}$/.test(nfcPassword.value)) {
                 confirmNfcBtn.disabled = false;
+                nfcError.textContent = '';
+            } else {
+                confirmNfcBtn.disabled = true;
             }
-        })
-        .catch(err => {
-            console.error(err);
-            nfcStatus.textContent = 'Server Error';
-            nfcStatus.className = 'nfc-status status-error';
-            confirmNfcBtn.disabled = false;
         });
-    });
+    }
+
+    if (confirmNfcBtn) {
+        confirmNfcBtn.addEventListener('click', () => {
+            const code = nfcInput.value;
+            const pass = nfcPassword.value;
+
+            nfcStatus.textContent = 'Verifying...';
+            confirmNfcBtn.disabled = true;
+
+            // AJAX Request to Verify User
+            fetch('handlers/verify-current-user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `nfcCode=${encodeURIComponent(code)}&nfcPassword=${encodeURIComponent(pass)}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Success!
+                    nfcStatus.textContent = 'Verified!';
+                    nfcStatus.className = 'nfc-status status-success';
+                    
+                    // Submit the actual form
+                    setTimeout(() => {
+                        const formToSubmit = document.getElementById(currentFormId);
+                        if (formToSubmit) {
+                            formToSubmit.submit();
+                        } else {
+                            console.error('Form not found: ' + currentFormId);
+                        }
+                    }, 500);
+                } else {
+                    // Failure
+                    nfcStatus.textContent = 'Invalid Credentials';
+                    nfcStatus.className = 'nfc-status status-error';
+                    nfcError.textContent = data.message || 'Authentication failed.';
+                    confirmNfcBtn.disabled = false;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                nfcStatus.textContent = 'Server Error';
+                nfcStatus.className = 'nfc-status status-error';
+                confirmNfcBtn.disabled = false;
+            });
+        });
+    }
 
     // --- Password Toggle Logic ---
     const togglePasswordButtons = document.querySelectorAll('.toggle-password');

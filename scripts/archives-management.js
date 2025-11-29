@@ -85,4 +85,41 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.remove('active');
         }
     }
+
+    // --- NEW LOGIC FOR EXPORT MODAL ---
+    const exportModal = document.getElementById('exportConfigModal');
+    const openExportBtn = document.getElementById('openExportModalBtn');
+    const closeExportBtns = document.querySelectorAll('.close-export-btn');
+    const exportForm = exportModal.querySelector('form');
+    const formatSelector = document.getElementById('exportFormatSelector');
+
+    if (openExportBtn && exportModal) {
+        openExportBtn.addEventListener('click', () => {
+            exportModal.classList.add('active');
+        });
+
+        closeExportBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                exportModal.classList.remove('active');
+            });
+        });
+
+        // Close when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === exportModal) {
+                exportModal.classList.remove('active');
+            }
+        });
+
+        // Dynamically change the handler based on format selection
+        if(formatSelector && exportForm) {
+            formatSelector.addEventListener('change', function() {
+                if(this.value === 'excel') {
+                    exportForm.action = 'handlers/export-archives.php'; // Your Excel handler
+                } else {
+                    exportForm.action = 'handlers/export-archives-pdf.php'; // Your PDF handler
+                }
+            });
+        }
+    }
 });

@@ -184,6 +184,10 @@
     flex-grow: 3;
 }
 
+.profile-item-gender{
+    font-family: var(--ff-Metropolis);
+}
+
 .profile-item:hover {
     background-color: #e0eaf1; /* A slightly different shade of your --clr-bgblue */
 }
@@ -248,6 +252,7 @@
     border: none;
     border-radius: 0; 
 }
+
 
 .modal.is-open .modal-content {
     transform: translateX(0);
@@ -501,6 +506,30 @@
     color: var(--clr-white);
 }
 
+.input-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-group-addon {
+    background-color: #e0e0e0;
+    padding: 0.38rem 0.1rem;
+    border: none;
+    border: 1px solid var(--clr-blue);
+    font-family: var(--ff-Metropolis);
+    color: var(--clr-blue);
+    font-size: 1rem;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+/* Specific override for the input inside the group to remove left border */
+.input-group input {
+    border-left: none; 
+    width: 100%;
+}
+
 .add-new-btn {
     margin-left: auto; /* Pushes the button to the right */
     display: flex;
@@ -601,4 +630,6 @@
     cursor: not-allowed;
     border-bottom: 1px solid #ccc;
 }
+
+
 

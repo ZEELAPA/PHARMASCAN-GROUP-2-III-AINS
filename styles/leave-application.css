@@ -320,6 +320,10 @@
     background-color: #0056b3;
 }
 
+.form-group input[type="date"] {
+    font-family: var(--ff-Metropolis);
+}
+
 .form-group input[readonly].status-input {
     font-weight: 600;
     cursor: default;
@@ -616,20 +620,21 @@
     background-color: #E9D8D4;
     border-color: var(--clr-highred);
     color: var(--clr-highred);
-    cursor: not-allowed;
+    cursor: pointer; /* Changed from not-allowed */
 }
 .modal-content-left .calendar-day.unavailable_leave:hover {
-     background-color: #E9D8D4;
+     background-color: #d6c5c1; /* Optional: Slight hover effect */
 }
 
 .modal-content-left .calendar-day.occupied {
     color: var(--clr-mediumyellow);
     background-color: #E7E1CF;
     border-color: var(--clr-mediumyellow);
-    cursor: not-allowed;
+    cursor: pointer; /* Changed to pointer */
 }
+/* Optional: Add hover effect to show it is interactive */
 .modal-content-left .calendar-day.occupied:hover {
-    background-color: #E7E1CF;
+    background-color: #dcd4be; 
 }
 
 .modal-content-left .calendar-day.pending_application {

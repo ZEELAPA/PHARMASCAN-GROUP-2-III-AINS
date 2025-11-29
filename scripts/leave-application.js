@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function fetchEvents(year, month) {
         try {
-            const response = await fetch(`handlers/get-calendar-events.php'?year=${year}&month=${month + 1}`);
+            const response = await fetch(`handlers/get-calendar-events.php?year=${year}&month=${month + 1}`);
             if (!response.ok) throw new Error('Network response failed');
             return await response.json();
         } catch (error) {
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     dayElement.classList.add('available_leave');
                 }
-                const isUnavailable = dayElement.classList.contains('unavailable_leave') || dayElement.classList.contains('occupied');
+                const isUnavailable = dayElement.classList.contains('unavailable_leave');
                 if (!isUnavailable) {
                     dayElement.addEventListener('click', () => {
                         if (activeDateField) {
@@ -261,6 +261,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         closeCalendarModal();
                     });
+                } else {
+                    dayElement.style.cursor = 'not-allowed';
                 }
             } else {
                 dayElement.classList.add('other-month');

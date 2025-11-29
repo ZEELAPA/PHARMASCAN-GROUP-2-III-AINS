@@ -1,58 +1,57 @@
 <?php
-require '../sqlconnect.php'; // Ensure this path is correct
+    session_start();
+    include('../auth.php'); // For add_toast
+    require '../sqlconnect.php'; 
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Retrieve all form data, including the hidden taskID
-    $taskID = $_POST['taskID'];
-    $taskName = trim($_POST['taskName']);
-    $accountID = $_POST['assignEmployee'];
-    $deadline = $_POST['taskDeadline'];
-    $priority = $_POST['taskPriority'];
-    $status = $_POST['taskStatus'];
-    $remarks = trim($_POST['taskRemarks']);
+        $taskID = $_POST['taskID'];
+        $taskName = trim($_POST['taskName']);
+        $accountID = $_POST['assignEmployee'];
+        $deadline = $_POST['taskDeadline'];
+        $priority = $_POST['taskPriority'];
+        $status = $_POST['taskStatus'];
+        $remarks = trim($_POST['taskRemarks']);
 
-    // Validate that we have a task ID
-    if (empty($taskID)) {
-        die("Error: Task ID is missing.");
-    }
-
-    // Prepare an UPDATE statement
-    $sql = "UPDATE tblagenda SET 
-                Task = ?, 
-                AccountID = ?, 
-                Deadline = ?, 
-                Priority = ?, 
-                Status = ?, 
-                Remarks = ? 
-            WHERE 
-                AgendaID = ?";
-
-    $stmt = $conn->prepare($sql);
-
-    if ($stmt) {
-        // Bind parameters. Note the types and the order. The integer ID is last.
-        // s - string, i - integer
-        $stmt->bind_param("sissssi", $taskName, $accountID, $deadline, $priority, $status, $remarks, $taskID);
-
-        if ($stmt->execute()) {
-            // Success: redirect back to the task page
-            header("Location: ../task-management.php?status=updated");
+        if (empty($taskID)) {
+            add_toast("Error: Task ID is missing.", "error");
+            header("Location: ../task-management.php");
             exit();
-        } else {
-            echo "Error executing update: " . $stmt->error;
         }
 
-        $stmt->close();
+        $sql = "UPDATE tblagenda SET 
+                    Task = ?, 
+                    AccountID = ?, 
+                    Deadline = ?, 
+                    Priority = ?, 
+                    Status = ?, 
+                    Remarks = ? 
+                WHERE 
+                    AgendaID = ?";
+
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt) {
+            $stmt->bind_param("sissssi", $taskName, $accountID, $deadline, $priority, $status, $remarks, $taskID);
+
+            if ($stmt->execute()) {
+                // SUCCESS TOAST
+                add_toast("Task details updated successfully!", "success");
+            } else {
+                add_toast("Error updating task: " . $stmt->error, "error");
+            }
+
+            $stmt->close();
+        } else {
+            add_toast("Database preparation error.", "error");
+        }
+
+        $conn->close();
+        header("Location: ../task-management.php");
+        exit();
+
     } else {
-        echo "Error preparing statement: " . $conn->error;
+        header("Location: ../task-management.php");
+        exit();
     }
-
-    $conn->close();
-
-} else {
-    // Redirect if not a POST request
-    header("Location: ../task-management.php");
-    exit();
-}
 ?>

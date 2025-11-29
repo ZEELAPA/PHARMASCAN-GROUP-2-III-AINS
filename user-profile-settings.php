@@ -1,30 +1,41 @@
 <?php
     include('auth.php');
-
     require_user();
-
     include('sqlconnect.php');
 
     $accountID = $_SESSION['AccountID'];
     $userData = [];
-
-    // Fetch current user data
-    $stmt = $conn->prepare("
-        SELECT p.FirstName, p.LastName, p.Gender, p.Age, p.ContactNumber, p.ProfilePicture, a.Email
-        FROM tblaccounts a
-        JOIN tblemployees e ON a.EmployeeID = e.EmployeeID
-        JOIN tblpersonalinfo p ON e.PersonalID = p.PersonalID
-        WHERE a.AccountID = ?
-    ");
-    $stmt->bind_param("i", $accountID);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $userData = $result->fetch_assoc();
-    }
-    $stmt->close();
+    $displayContact = '';
     
-    // Initialize JS variables to prevent errors
+    // --- SECURITY CHECK ---
+    // Check if the user has unlocked the profile in this session
+    $isLocked = !isset($_SESSION['ProfileAccess']) || $_SESSION['ProfileAccess'] !== true;
+
+    if (!$isLocked) {
+        // ONLY Fetch data if unlocked
+        $stmt = $conn->prepare("
+            SELECT p.FirstName, p.LastName, p.Gender, p.Age, p.ContactNumber, p.ProfilePicture, a.Email
+            FROM tblaccounts a
+            JOIN tblemployees e ON a.EmployeeID = e.EmployeeID
+            JOIN tblpersonalinfo p ON e.PersonalID = p.PersonalID
+            WHERE a.AccountID = ?
+        ");
+        $stmt->bind_param("i", $accountID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $userData = $result->fetch_assoc();
+        }
+        $stmt->close();
+
+        // Phone Logic (from previous request)
+        $displayContact = $userData['ContactNumber'] ?? '';
+        if (strpos($displayContact, '63') === 0) $displayContact = substr($displayContact, 2);
+        if (strpos($displayContact, '+63') === 0) $displayContact = substr($displayContact, 3);
+        if (strpos($displayContact, '0') === 0) $displayContact = substr($displayContact, 1);
+    }
+
+    // Initialize JS variables
     $chartDataJSON = '[]';
     $taskStatusDataJSON = '[]';
 ?>
@@ -32,6 +43,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+    <!-- ... [KEEP EXISTING HEAD CONTENT] ... -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -48,17 +60,40 @@
     <script defer src="scripts/user-profile-settings.js?v=<?php echo time(); ?>"></script>
 
     <script>
-        // These variables are now safely initialized at the top of the PHP script
         const employeeDistributionData = <?php echo $chartDataJSON; ?>;
         const taskStatusData = <?php echo $taskStatusDataJSON; ?>;
     </script>
+
+    <!-- INLINE STYLE FOR LOCK MODAL -->
+    <style>
+
+    </style>
 </head>
 <body>
     <div class="app-container">
+        <!-- --- SECURITY LOCK MODAL --- -->
+        <?php if ($isLocked): ?>
+            <div id="securityLockModal" class="lock-modal">
+                <div class="lock-box">
+                    <h2>Security Check</h2>
+                    <p>Please enter your password to access Profile Settings.</p>
+                    
+                    <input type="password" id="securityPass" placeholder="Enter Password" autofocus autocomplete="current-password">
+                    <div id="securityError" class="lock-error">Incorrect Password</div>
+
+                    <div class="modal-buttons">
+                        <!-- Added IDs for JS targeting -->
+                        <button type="button" id="cancelLockBtn" class="btn-cancel">Cancel</button>
+                        <button type="button" id="unlockBtn" class="btn-confirm">Unlock</button>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <?php include('toast-message.php'); ?>
         <?php include('user-sidebar.php'); ?>
         
+        <!-- Confirmation Modal (Existing) -->
         <div id="confirmationModal" class="modal-overlay">
             <div class="modal-box">
                 <h3>Confirm Changes</h3>
@@ -82,15 +117,15 @@
                             <h1>Profile Information</h1>
                         </div>
                         <hr>
-                        <form id="profileForm" action="handlers/admin-settings-handler.php" method="POST" enctype="multipart/form-data">
+                        <form id="profileForm" action="handlers/user-settings-handler.php" method="POST" enctype="multipart/form-data">
                             <div class="form-container">
                                 <div id="profileContent" class="tab-content">
                                     <div class="profile-pic-container">
                                         <div class="img-wrapper">
                                             <?php 
-                                                $profilePicPath = !empty($userData['ProfilePicture']) 
-                                                    ? 'images/' . htmlspecialchars($userData['ProfilePicture']) 
-                                                    : 'images/default-user.png';
+                                                // Handle empty data gracefully if locked (though modal covers it)
+                                                $picName = $userData['ProfilePicture'] ?? '';
+                                                $profilePicPath = !empty($picName) ? 'images/' . htmlspecialchars($picName) : 'images/default-user.png';
                                             ?>
                                             <img id="profilePreview" src="<?php echo $profilePicPath; ?>" alt="Profile Picture">
                                         </div>
@@ -120,19 +155,25 @@
                                             <label for="age">Age</label>
                                             <input type="number" id="age" name="age" value="<?php echo htmlspecialchars($userData['Age'] ?? ''); ?>">
                                         </div>
+                                        <!-- UPDATED CONTACT NUMBER WITH +63 -->
                                         <div class="form-group">
                                             <label for="contactNumber">Contact Number</label>
-                                            <input type="text" id="contactNumber" name="contactNumber" value="<?php echo htmlspecialchars($userData['ContactNumber'] ?? ''); ?>">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">+63</span>
+                                                <input type="text" id="contactNumber" name="contactNumber" 
+                                                       value="<?php echo htmlspecialchars($displayContact); ?>" 
+                                                       placeholder="9123456789" 
+                                                       maxlength="10" 
+                                                       inputmode="numeric">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="email">Email</label>
                                         <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($userData['Email'] ?? ''); ?>" required>
                                     </div>
-                                    <!-- Add this inside the form -->
                                     <input type="hidden" name="action" value="save_profile">
 
-                                    <!-- Update the button -->
                                     <div class="form-actions">
                                         <button type="button" class="btn-save" onclick="openModal('profileForm')">Save Changes</button>
                                     </div>

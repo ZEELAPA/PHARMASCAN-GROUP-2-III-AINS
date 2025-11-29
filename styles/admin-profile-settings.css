@@ -71,13 +71,7 @@
 }
 
 
-/* FORM PANEL STYLES */
-
-.tab-content {
-    padding-top: 0;
-}
-
-
+/* PROFILE SPECIFIC STYLES */
 .profile-pic-container {
     display: flex;
     flex-direction: column;
@@ -85,38 +79,36 @@
     margin-bottom: 25px;
 }
 
-.profile-pic-container .img-wrapper {
-    width: 130px;
-    height: 130px;
+.img-wrapper {
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     overflow: hidden;
-    border: 4px solid #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    margin-bottom: 15px;
+    border: 3px solid var(--clr-blue);
+    margin-bottom: 10px;
 }
 
-.profile-pic-container img {
+.img-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
 .upload-btn {
-    background-color: #145494; /* Main Blue */
-    color: white;
-    padding: 8px 16px;
-    border-radius: 5px;
+    background-color: #f0f0f0;
+    padding: 6px 12px;
+    border-radius: 4px;
     font-size: 0.9rem;
-    font-weight: 600;
     cursor: pointer;
+    border: 1px solid #ccc;
     transition: background 0.2s;
 }
 
-.upload-btn:hover {
-    background-color: #0f437a;
+/* Form Styles */
+.form-container {
+    width: 100%;
 }
 
-/* Form Group Styles */
 .form-group {
     margin-bottom: 15px;
 }
@@ -126,32 +118,21 @@
     margin-bottom: 5px;
 }
 
-.form-group input,
-.form-group select {
+.form-group input, .form-group select {
     width: 100%;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem;
     background-color: var(--clr-bgwhite);
     border: none;
     border: 1px solid var(--clr-blue);
+    font-family: var(--ff-Metropolis);
     color: var(--clr-blue);
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     box-sizing: border-box;
 }
 
-.form-group input:focus,
-.form-group select:focus {
+.form-group input:focus, .form-group select:focus {
     outline: none;
-}
-
-.form-group input[readonly] {
-    color: #95a5a6;
-    cursor: not-allowed;
-}
-
-/* Style for an input field that has an error */
-.form-group input.is-invalid {
-    border-bottom: 1px solid #c0392b;
 }
 
 .form-row {
@@ -163,7 +144,6 @@
     flex: 1;
 }
 
-/* Form Actions (Buttons) */
 .form-actions {
     display: flex;
     justify-content: start;
@@ -185,9 +165,7 @@
     color: var(--clr-white);
 }
 
-
-/* OPTIONS START */
-
+/* OPTIONS PANEL */
 .options-panel {
     flex: 1;
     display: flex;
@@ -219,6 +197,7 @@
     font-weight: 700;
 }
 
+/* CONFIRMATION MODAL */
 .modal-overlay {
     display: none; /* Hidden by default */
     position: fixed;
@@ -251,3 +230,50 @@
 }
 .btn-confirm { background: var(--clr-blue); color: var(--clr-white); }
 .btn-cancel { background: var(--clr-white); color: var(--clr-blue); border: 1px solid var(--clr-blue);}
+
+/* Add these new styles for the Phone Input Group */
+.input-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-group-addon {
+    background-color: #e0e0e0;
+    padding: 0.5rem 0.1rem;
+    border: none;
+    border: 1px solid var(--clr-blue);
+    font-family: var(--ff-Metropolis);
+    color: var(--clr-blue);
+    font-size: 1rem;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+/* Specific override for the input inside the group to remove left border */
+.input-group input {
+    border-left: none; 
+    width: 100%;
+    /* Ensure height matches visual if padding varies */
+}
+
+.form-group input:focus {
+    outline: none;
+    /* You might want to add a focus ring to the whole group if desired, 
+       but standard behavior is fine */
+}
+
+.lock-modal {
+    display: flex; position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9);
+    justify-content: center; align-items: center; z-index: 9999;
+}
+.lock-box {
+    background: var(--clr-white); padding: 2rem; border-radius: 10px;
+    color: var(--clr-blue) ; text-align: center; width: 90%; max-width: 400px;
+}
+.lock-box input {
+    width: 100%; padding: 10px; margin: 15px 0;
+    border: 1px solid #ccc; border-radius: 5px;
+}
+.lock-error { color: red; font-size: 0.9rem; display: none; margin-bottom: 10px; }

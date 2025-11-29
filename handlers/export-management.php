@@ -230,6 +230,33 @@ function downloadSpreadsheet($spreadsheet, $filename) {
     exit;
 }
 
+function getUserMonthlyAttendance($conn, $accountID, $year, $month) {
+    $stmt = $conn->prepare("SELECT AttendanceDate, TimeIn, TimeOut FROM tblattendance
+                            WHERE AccountID = ? AND YEAR(AttendanceDate) = ? AND MONTH(AttendanceDate) = ?
+                            ORDER BY AttendanceDate ASC");
+    $stmt->bind_param("iii", $accountID, $year, $month);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $attendanceData = [];
+    while ($row = $result->fetch_assoc()) {
+        $attendanceData[$row['AttendanceDate']] = $row;
+    }
+    return $attendanceData;
+}
+function getUserInfo($conn, $accountID) {
+    $stmt = $conn->prepare("SELECT 
+                                CONCAT_WS(' ', info.FirstName, info.LastName) AS FullName,
+                                dept.DepartmentName
+                            FROM tblaccounts AS acc
+                            JOIN tblemployees AS emp ON acc.EmployeeID = emp.EmployeeID
+                            JOIN tblpersonalinfo AS info ON emp.PersonalID = info.PersonalID
+                            JOIN tbldepartment AS dept ON emp.DepartmentID = dept.DepartmentID
+                            WHERE acc.AccountID = ?");
+    $stmt->bind_param("i", $accountID);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
 function exportMonthlyDTR($conn, $employeeId, $year, $month) {
     // This is nearly identical to your previous handlers/export-attendance.php script
     // We just need a function to get AccountID from EmployeeID
@@ -245,7 +272,7 @@ function exportMonthlyDTR($conn, $employeeId, $year, $month) {
     $userInfo = getUserInfo($conn, $accountID);
     $monthlyAttendance = getUserMonthlyAttendance($conn, $accountID, $year, $month);
 
-    $spreadsheet = IOFactory::load('Dtr-Sample.xlsx');
+    $spreadsheet = IOFactory::load('../Dtr-Sample.xlsx');
     $sheet = $spreadsheet->getActiveSheet();
 
     $fullName = $userInfo['FullName'] ?? 'Unknown User';

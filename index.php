@@ -36,7 +36,6 @@
             <div class="nav-buttons-container">
                 <ul>
                     <li><a href="" class="active">Home</a></li>
-                    <li><a href="">About Us</a></li>
                     <li><a href="attendance.php">Attendance</a></li>
                 </ul>
             </div>
@@ -87,8 +86,6 @@
 
 
         </main>
-
-
     </div>
 </body>
 </html>

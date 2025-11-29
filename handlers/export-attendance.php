@@ -70,7 +70,7 @@ $leaveDays = getLeaveStatusForMonth($conn, $accountID, $selectedYear, $selectedM
 // (5) GENERATE EXCEL FILE
 try {
     // Load the template file
-    $templatePath = 'Dtr-Sample.xlsx';
+    $templatePath = '../Dtr-Sample.xlsx';
     if (!file_exists($templatePath)) {
         die("Error: Template file '{$templatePath}' not found. Please ensure it is in the correct directory.");
     }

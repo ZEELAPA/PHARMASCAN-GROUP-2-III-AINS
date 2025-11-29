@@ -91,6 +91,9 @@ document.addEventListener('DOMContentLoaded', function() {
         statusField.value = leaveData.status;
         reasonField.value = leaveData.remarks || 'No remarks provided.';
 
+        accountIDField.value = leaveData.accountId;
+        updateLeaveBalanceDisplay();
+
         statusField.className = ''; // Clear existing classes
         if (leaveData.status === 'Approved') statusField.classList.add('status-input-approved');
         else if (leaveData.status === 'Declined' || leaveData.status === 'Rejected') statusField.classList.add('status-input-rejected');
@@ -180,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function fetchEvents(year, month) {
         try {
-            const response = await fetch(`handlers/get-calendar-events.php'?year=${year}&month=${month + 1}`);
+            const response = await fetch(`handlers/get-calendar-events.php?year=${year}&month=${month + 1}`);
             if (!response.ok) throw new Error('Network response failed');
             return await response.json();
         } catch (error) {
@@ -217,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     dayElement.classList.add('available_leave');
                 }
 
-                const isUnavailable = dayElement.classList.contains('unavailable_leave') || dayElement.classList.contains('occupied');
+                const isUnavailable = dayElement.classList.contains('unavailable_leave');
                 if (!isUnavailable) {
                     dayElement.addEventListener('click', () => {
                         if (activeDateField) {

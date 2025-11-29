@@ -23,6 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const taskRemarksInput = document.getElementById('taskRemarks');
     const archiveButton = document.getElementById('archiveButton');
 
+    const confirmationModal = document.getElementById('confirmationModal');
+    const btnYesConfirm = document.getElementById('btnYesConfirm');
+    const btnCancelConfirm = document.getElementById('btnCancelConfirm');
+
+    let pendingAction = null;
+
 
     const allTaskCards = document.querySelectorAll('.task-card');
     const defaultExpandedCard = document.querySelector('.task-card.is-expanded');
@@ -97,6 +103,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // CONFIRMATION MODAL 
+
+    const openConfirmation = (action) => {
+        pendingAction = action; // Store the action
+        confirmationModal.style.display = 'flex'; // Show modal
+    };
+
+    const closeConfirmation = () => {
+        pendingAction = null; // Clear action
+        confirmationModal.style.display = 'none'; // Hide modal
+    };
+
+    // Attach listeners to the custom modal buttons
+    if (btnCancelConfirm) {
+        btnCancelConfirm.addEventListener('click', closeConfirmation);
+    }
+
+    if (btnYesConfirm) {
+        btnYesConfirm.addEventListener('click', () => {
+            if (pendingAction) {
+                pendingAction(); // Execute the stored function
+            }
+            closeConfirmation();
+        });
+    }
+    // END CONFIRMATION MODAL
 
     // --- Functions to control the modal's state ---
 
@@ -200,8 +233,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            if (confirm("Are you sure you want to archive this task? It will be permanently removed from the active task list.")) {
-                
+            // Instead of native confirm(), we call our custom function
+            openConfirmation(() => {
+                // This is the logic that runs ONLY if user clicks "Confirm"
                 const currentUserID = CURRENT_USER_ACCOUNT_ID; 
 
                 fetch('handlers/archive-task-handler.php', {
@@ -214,20 +248,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert("Task archived successfully!");
-                        closeModal();
-                        window.location.reload(); // Reload to refresh the task list
+                        // Success toast is set in PHP session, reload to show it
+                        window.location.reload(); 
                     } else {
-                        alert("Archiving failed: " + (data.message || "An unknown error occurred."));
+                        // Error toast is set in PHP session
+                        window.location.reload(); 
                     }
                 })
                 .catch(error => {
                     console.error('Network Error:', error);
                     alert("A network error occurred during archiving.");
                 });
-            }
+            });
         });
     }
+
+    const toastNotifications = document.querySelectorAll('.status-toast');
+    
+    toastNotifications.forEach(toast => {
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            toast.classList.add('hide-toast');
+            
+            // Remove from DOM after animation finishes
+            toast.addEventListener('transitionend', () => {
+                toast.remove();
+            });
+        }, 5000);
+
+        // Allow click to dismiss immediately
+        toast.addEventListener('click', () => {
+            toast.classList.add('hide-toast');
+            setTimeout(() => toast.remove(), 500);
+        });
+    });
 
     generateCalendar();
 
